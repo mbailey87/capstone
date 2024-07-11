@@ -1,15 +1,17 @@
 {
   "name": "capstone",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
+  "engines": {
+  "node": "20.11.1"
+},
   "scripts": {
     "build": "cd server && npm i && cd ../client && npm i && npm run build",
-    "start": "node server/server.js",
-    "engines": {
-      "node": "20.11.0"
-    }
+    "start": "node server/server.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "keywords": [],
+  "description": ""
 }
+
