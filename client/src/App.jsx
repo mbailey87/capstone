@@ -1,16 +1,14 @@
 // client/src/App.jsx
-
-import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import Navbar from './components/Navbar'
-import Footer from './components/Footer'
-import AdminLoginPage from './pages/AdminLoginPage'
-import StudentLoginPage from './pages/StudentLoginPage'
-import Register from './pages/Register'
-
-
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import reactLogo from './assets/react.svg';
+import viteLogo from '/vite.svg';
+import './App.css';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import AdminLoginPage from './pages/AdminLoginPage';
+import StudentLoginPage from './pages/StudentLoginPage';
+import RegistrationPage from './pages/RegistrationPage';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -22,20 +20,25 @@ function App() {
       .then((data) => setData(data.message));
   }, []);
 
-
   return (
     <>
-     
-      
-      <div className="card">
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path="/AdminLoginPage" element={<AdminLoginPage />} />
+          <Route path="/StudentLoginPage" element={<StudentLoginPage />} />
+          <Route path="/RegistrationPage" element={<RegistrationPage />} />
+        </Routes>
+        <div className="card">
+          <p>
+            Edit <code>src/App.jsx</code> and save to test HMR
+          </p>
           <h1>{!data ? "Loading..." : data}</h1>
-        </p>
-      </div>
+        </div>
+        <Footer />
+      </Router>
     </>
-  )
+  );
 }
 
-export default App
-
+export default App;
