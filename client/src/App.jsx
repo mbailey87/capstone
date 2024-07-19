@@ -22,27 +22,26 @@ function App() {
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className='flex flex-col h-full '>
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path="/AdminLoginPage" element={<AdminLoginPage />} />
+          <Route path="/StudentLoginPage" element={<StudentLoginPage />} />
+          <Route path="/RegistrationPage" element={<RegistrationPage />} />
+        </Routes>
+        <div className='mt-auto self-center'>
+          <div className="card mt-auto">
+            <p>
+              Edit <code>src/App.jsx</code> and save to test HMR
+            </p>
+            <h1>{!data ? "Loading..." : data}</h1>
+          </div>
+          <Footer />
+        </div>
+        
+      </Router>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-          <h1>{!data ? "Loading..." : data}</h1>
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   );
 }
