@@ -1,0 +1,30 @@
+### Get Student Token
+POST http://localhost:3001/studentLogin
+Content-Type: application/json
+
+# student user has access to student home page
+{
+    "username": "lilly1",
+    "password": "password1"
+}
+
+
+### Get Admin Token
+POST http://localhost:3001/adminLogin
+Content-Type: application/json
+
+# admin user has access to admin routes including /getStudents
+{
+    "username": "bella3",
+    "password": "password3"
+}
+
+
+### Get student home page
+GET http://localhost:3001/home/student
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlbGxhMyIsImFkbWluIjp0cnVlLCJpYXQiOjE3MjEzNTI0NjksImV4cCI6MTcyMTM1MzM2OX0.UyhN7qSPKPTBW9fgyyZMYwwUhN0XTlI_JPxmmKThVHU
+
+
+### Get students
+GET http://localhost:3001/home/admin/getStudents
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlbGxhMyIsImFkbWluIjp0cnVlLCJpYXQiOjE3MjEzNTI0NjksImV4cCI6MTcyMTM1MzM2OX0.UyhN7qSPKPTBW9fgyyZMYwwUhN0XTlI_JPxmmKThVHU
