@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const { expressjwt } = require("express-jwt");
 require("dotenv").config();
 const bcrypt = require('bcrypt');
+const saltRounds = 10;
 const db = require("./config/database");
 
 const PORT = process.env.PORT || 3001;
@@ -20,7 +21,31 @@ app.get("/api", (req, res) => {
   res.json({ message: "Hello from server!" });
 });
 
-// Validate student login credentials and get token
+// Create new user in database
+app.post("/createUser", async (req, res) => {
+  if (Object.keys(req.body)[0] === undefined) {
+    return res.status(400).json({ errorMessage: "No user info to process" });
+  };
+
+  const info = req.body;
+
+  // If username already exists in database or if not all fields filled in, return error
+  // Otherwise, hash password and call createUser function with user info and hash
+  const user = await db.getUser(req.body.username, req.body.role);
+  if (user[0]) {
+    return res.status(400).json({ errorMessage: "Username already in use, try again" });
+  } else if (info.role && info.username && info.first_name && info.last_name 
+      && info.email && info.telephone && info.address && info.password) {
+        bcrypt.hash(info.password, saltRounds, (err, hash) => {
+          if (err) throw err;
+          db.createUser(req, res, info, hash);
+        });
+  } else {
+    return res.status(400).json({ errorMessage: "All fields are required" });
+  };
+});
+
+// Validate login credentials and create token
 const loginHandler = async (req, res, role) => {
   if (Object.keys(req.body)[0] === undefined) {
     return res.status(400).json({ errorMessage: "No user info to process" });
@@ -28,20 +53,25 @@ const loginHandler = async (req, res, role) => {
 
   try {
     const user = await db.getUser(req.body.username, role);
-    console.log('found user from database: ', user);
-  
-    // If user doesn't exist or password doesn't match, don't create token
-    // hardcoded admin password hash until I implement bcrypt
-    if (!user || user[0].password_hash !== "$1$.5JR2Q15$VD6Uyz2.j4FVqYt5yioMe.") {
+    if (!user[0]) {
       return res.status(401).json({ errorMessage: "Invalid Credentials" });
     };
+    console.log('found user from database: ', user);
   
-    const token = jwt.sign({username: user[0].username, admin: role === "admin"}, process.env.secret, {
-      algorithm: "HS256",
-      expiresIn: "15m",
+    // Check if passwords match and create token, or send error message if they don't
+    bcrypt.compare(req.body.password, user[0].password_hash, (err, result) => {
+      if (err) throw err;
+      if (result) {
+        const token = jwt.sign({username: user[0].username, admin: role === "admin"}, process.env.secret, {
+          algorithm: "HS256",
+          expiresIn: "15m",
+        });
+      
+        return res.json({ token: token });
+      } else {
+        return res.status(401).json({ errorMessage: "Invalid Credentials" });
+      }
     });
-  
-    return res.json({ token: token });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ errorMessage: "Internal Server Error" });

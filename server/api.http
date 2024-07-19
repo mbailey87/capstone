@@ -1,3 +1,121 @@
+### Create new user
+POST http://localhost:3001/createUser
+Content-Type: application/json
+
+# create student user
+{
+    "role": "student",
+    "username": "alex5",
+    "first_name": "Alex",
+    "last_name": "Smith",
+    "email": "alex.smith5@stu.mtec.edu",
+    "telephone": "5555555555",
+    "address": "55 North 5000 East",
+    "password": "password5"
+}
+
+# {
+#     "role": "student",
+#     "username": "lilly1",
+#     "first_name": "Lilly",
+#     "last_name": "Alvarez",
+#     "email": "lilly.alvarez1@stu.mtec.edu",
+#     "telephone": "1111111111",
+#     "address": "1111 West Hollow Way",
+#     "password": "password1"
+# }
+
+# {
+#     "role": "student",
+#     "username": "sarah2",
+#     "first_name": "Sarah",
+#     "last_name": "Hawkins",
+#     "email": "sarah.hawkins2@stu.mtec.edu",
+#     "telephone": "2222222222",
+#     "address": "200 S 2200 W",
+#     "password": "password2"
+# }
+
+# {
+#     "role": "student",
+#     "username": "eli3",
+#     "first_name": "Eli",
+#     "last_name": "Garza",
+#     "email": "eli.garza3@stu.mtec.edu",
+#     "telephone": "3333333333",
+#     "address": "303 North Bay Boulevard",
+#     "password": "password3"
+# }
+
+# {
+#     "role": "student",
+#     "username": "eva4",
+#     "first_name": "Eva",
+#     "last_name": "Seal",
+#     "email": "eva.seal4@stu.mtec.edu",
+#     "telephone": "4444444444",
+#     "address": "44 East River Road",
+#     "password": "password4"
+# }
+
+
+# create admin user
+# {
+#     "role": "admin",
+#     "username": "michael5",
+#     "first_name": "Michael",
+#     "last_name": "Miner",
+#     "email": "michael.miner5@mtec.edu",
+#     "telephone": "5555555555",
+#     "address": "555 South 505 West",
+#     "password": "password5"
+# }
+
+# {
+#     "role": "admin",
+#     "username": "dave1",
+#     "first_name": "Dave",
+#     "last_name": "Atkins",
+#     "email": "dave.atkins1@mtec.edu",
+#     "telephone": "1111111111",
+#     "address": "1111 North Example Road",
+#     "password": "password1"
+# }
+
+# {
+#     "role": "admin",
+#     "username": "emma2",
+#     "first_name": "Emma",
+#     "last_name": "Porter",
+#     "email": "emma.porter2@mtec.edu",
+#     "telephone": "2222222222",
+#     "address": "222 East Address Alley",
+#     "password": "password2"
+# }
+
+# {
+#     "role": "admin",
+#     "username": "bella3",
+#     "first_name": "Isabella",
+#     "last_name": "Roller",
+#     "email": "isabella.roller3@mtec.edu",
+#     "telephone": "3333333333",
+#     "address": "30303 South Summer Street",
+#     "password": "password3"
+# }
+
+# {
+#     "role": "admin",
+#     "username": "trey4",
+#     "first_name": "Trey",
+#     "last_name": "Hyde",
+#     "email": "trey.hyde4@mtec.edu",
+#     "telephone": "4444444444",
+#     "address": "44 West 400 North",
+#     "password": "password4"
+# }
+
+
 ### Get Student Token
 POST http://localhost:3001/studentLogin
 Content-Type: application/json
@@ -22,9 +140,9 @@ Content-Type: application/json
 
 ### Get student home page
 GET http://localhost:3001/home/student
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlbGxhMyIsImFkbWluIjp0cnVlLCJpYXQiOjE3MjEzNTI0NjksImV4cCI6MTcyMTM1MzM2OX0.UyhN7qSPKPTBW9fgyyZMYwwUhN0XTlI_JPxmmKThVHU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlbGxhMyIsImFkbWluIjp0cnVlLCJpYXQiOjE3MjE0MTYwNDcsImV4cCI6MTcyMTQxNjk0N30.CmWRAyFBfTalZnfbgDGWHUrmZ6D2kq3BWexpA8bJ2L0
 
 
 ### Get students
 GET http://localhost:3001/home/admin/getStudents
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlbGxhMyIsImFkbWluIjp0cnVlLCJpYXQiOjE3MjEzNTI0NjksImV4cCI6MTcyMTM1MzM2OX0.UyhN7qSPKPTBW9fgyyZMYwwUhN0XTlI_JPxmmKThVHU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlbGxhMyIsImFkbWluIjp0cnVlLCJpYXQiOjE3MjE0MTYwNDcsImV4cCI6MTcyMTQxNjk0N30.CmWRAyFBfTalZnfbgDGWHUrmZ6D2kq3BWexpA8bJ2L0
