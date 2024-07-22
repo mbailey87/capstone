@@ -1,31 +1,30 @@
 // client/src/App.jsx
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
 import './App.css';
+import './index.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AdminLoginPage from './pages/AdminLoginPage';
 import StudentLoginPage from './pages/StudentLoginPage';
 import RegistrationPage from './pages/RegistrationPage';
+import HomePage from './pages/HomePage'; // Import the HomePage component
 
 function App() {
-  const [count, setCount] = useState(0);
   const [data, setData] = useState(null);
 
-  useEffect(() => {
-    fetch("/api")
-      .then((res) => res.json())
-      .then((data) => setData(data.message));
-  }, []);
+  // useEffect(() => {
+  //   fetch("/api")
+  //     .then((res) => res.json())
+  //     .then((data) => setData(data.message));
+  // }, []);
 
   return (
-    <>
-    <div className='flex flex-col h-full '>
+    <div className='flex flex-col min-h-screen'>
       <Router>
         <Navbar />
         <Routes>
+          <Route path="/" element={<HomePage />} /> {/* Add the Home route */}
           <Route path="/AdminLoginPage" element={<AdminLoginPage />} />
           <Route path="/StudentLoginPage" element={<StudentLoginPage />} />
           <Route path="/RegistrationPage" element={<RegistrationPage />} />
@@ -39,10 +38,8 @@ function App() {
           </div>
           <Footer />
         </div>
-        
       </Router>
-      </div>
-    </>
+    </div>
   );
 }
 
