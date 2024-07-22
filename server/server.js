@@ -1,13 +1,17 @@
 const express = require("express");
 const path = require("path");
+const jwt = require("jsonwebtoken");
+const { expressjwt } = require("express-jwt");
+require("dotenv").config();
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+const db = require("./config/database");
 
 const PORT = process.env.PORT || 3001;
 
 const app = express();
 
-app.listen(PORT, () => {
-  console.log(`Server listening on ${PORT}`);
-});
+app.use(express.json());
 
 // Have Node serve the files for our built React app
 app.use(express.static(path.resolve(__dirname, "../client/dist")));
@@ -15,4 +19,96 @@ app.use(express.static(path.resolve(__dirname, "../client/dist")));
 // Handle GET requests to /api route
 app.get("/api", (req, res) => {
   res.json({ message: "Hello from server!" });
+});
+
+// Create new user in database
+app.post("/createUser", async (req, res) => {
+  if (Object.keys(req.body)[0] === undefined) {
+    return res.status(400).json({ errorMessage: "No user info to process" });
+  };
+
+  const info = req.body;
+
+  // If username already exists in database or if not all fields filled in, return error
+  // Otherwise, hash password and call createUser function with user info and hash
+  const user = await db.getUser(req.body.username, req.body.role);
+  if (user[0]) {
+    return res.status(400).json({ errorMessage: "Username already in use, try again" });
+  } else if (info.role && info.username && info.first_name && info.last_name 
+      && info.email && info.telephone && info.address && info.password) {
+        bcrypt.hash(info.password, saltRounds, (err, hash) => {
+          if (err) throw err;
+          db.createUser(req, res, info, hash);
+        });
+  } else {
+    return res.status(400).json({ errorMessage: "All fields are required" });
+  };
+});
+
+// Validate login credentials and create token
+const loginHandler = async (req, res, role) => {
+  if (Object.keys(req.body)[0] === undefined) {
+    return res.status(400).json({ errorMessage: "No user info to process" });
+  };
+
+  try {
+    const user = await db.getUser(req.body.username, role);
+    if (!user[0]) {
+      return res.status(401).json({ errorMessage: "Invalid Credentials" });
+    };
+    console.log('found user from database: ', user);
+  
+    // Check if passwords match and create token, or send error message if they don't
+    bcrypt.compare(req.body.password, user[0].password_hash, (err, result) => {
+      if (err) throw err;
+      if (result) {
+        const token = jwt.sign({username: user[0].username, admin: role === "admin"}, process.env.secret, {
+          algorithm: "HS256",
+          expiresIn: "15m",
+        });
+      
+        return res.json({ token: token });
+      } else {
+        return res.status(401).json({ errorMessage: "Invalid Credentials" });
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ errorMessage: "Internal Server Error" });
+  };
+};
+
+// Validate student login credentials and get token
+app.post("/studentLogin", (req, res) => loginHandler(req, res, "student"));
+
+// Validate admin login credentials and get token
+app.post("/adminLogin", (req, res) => loginHandler(req, res, "admin"));
+
+// All home paths require token to access
+app.use(
+  "/home", 
+  expressjwt({ secret: process.env.secret, algorithms: ["HS256"] })
+);
+
+// Handle GET requests to /home/student route
+app.get("/home/student", (req, res) => {
+  res.json({ message: "Hello student!" });
+});
+
+// Middleware to check if a user is an admin
+function checkAdmin(req, res, next) {
+  if (!req.auth.admin) {
+    return res.status(403).json({ errorMessage: "Access denied" });
+  }
+  next();
+};
+
+// All /home/admin routes require user to be an admin
+app.use("/home/admin", checkAdmin);
+
+// Handle GET requests to /getStudents route
+app.get("/home/admin/getStudents", db.getStudents);
+
+app.listen(PORT, () => {
+  console.log(`Server listening on ${PORT}`);
 });
