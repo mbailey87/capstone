@@ -7,9 +7,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        purple: {
-          600: '#6B46C1', // Add your custom purple color
-        },
+        purple: "#6B46C1",
+        gold: "#d1a855"
       },
     },
   },

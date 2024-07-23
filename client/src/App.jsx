@@ -6,28 +6,33 @@ import './index.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AdminLoginPage from './pages/AdminLoginPage';
-import StudentLoginPage from './pages/StudentLoginPage';
+import StudentLoginPage from './pages/studentLogin';
 import RegistrationPage from './pages/RegistrationPage';
-import HomePage from './pages/HomePage'; // Import the HomePage component
+import HomePage from './pages/HomePage';
+import StudentDashboardPage from './pages/StudentDashboardPage';
+import AdminDashboardPage from './pages/AdminDashboardPage';
+import ProtectedRoute from './components/ProtectedRoute'; // Import ProtectedRoute
 
 function App() {
   const [data, setData] = useState(null);
 
-  // useEffect(() => {
-  //   fetch("/api")
-  //     .then((res) => res.json())
-  //     .then((data) => setData(data.message));
-  // }, []);
+  useEffect(() => {
+    fetch("/api")
+      .then((res) => res.json())
+      .then((data) => setData(data.message));
+  }, []);
 
   return (
     <div className='flex flex-col min-h-screen'>
       <Router>
         <Navbar />
         <Routes>
-          <Route path="/" element={<HomePage />} /> {/* Add the Home route */}
+          <Route path="/" element={<HomePage />} />
           <Route path="/AdminLoginPage" element={<AdminLoginPage />} />
-          <Route path="/StudentLoginPage" element={<StudentLoginPage />} />
+          <Route path="/studentLogin" element={<StudentLoginPage />} />
           <Route path="/RegistrationPage" element={<RegistrationPage />} />
+          <Route path="/home/student" element={<ProtectedRoute element={StudentDashboardPage} />} /> {/* Protect StudentDashboardPage route */}
+          <Route path="/home/admin" element={<ProtectedRoute element={AdminDashboardPage} />} /> {/* Protect AdminDashboardPage route */}
         </Routes>
         <div className='mt-auto self-center'>
           <div className="card mt-auto">

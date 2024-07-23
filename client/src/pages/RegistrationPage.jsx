@@ -1,64 +1,123 @@
-import React from "react";
-import { useState } from "react";
+// client/src/pages/RegistrationPage.jsx
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const RegistrationPage = () => {
-    const [formData, setFormData] = useState({
-        username: "",
-        password: "",
-        confirmPassword: "",
-        email: "",
-        firstName: "",
-        lastName: "",
-        telephone: ""
+  const [userInfo, setUserInfo] = useState({
+    role: 'student',
+    username: '',
+    first_name: '',
+    last_name: '',
+    email: '',
+    telephone: '',
+    address: '',
+    password: ''
+  });
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserInfo({ ...userInfo, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const response = await fetch('/createUser', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(userInfo)
     });
-    const handleChange = (e) => {
-       const { name, value } = e.target;
-       setFormData({ ...formData, [name]: value });
-    };
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Add code here to handle form submission
-    };
+    const data = await response.json();
+    if (response.ok) {
+      alert(data.message);
+      navigate('/StudentLoginPage');
+    } else {
+      alert(data.errorMessage);
+    }
+  };
 
-    return (
-        <>
-            <div>
-                <h1>Register</h1>
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <label>Username:</label>
-                        <input type="text" name="username" value={formData.username} onChange={handleChange}/>
-                    </div>
-                    <div>
-                        <label>Password:</label>
-                        <input type="password" name="password" value={formData.password} onChange={handleChange}/>
-                    </div>
-                    <div>
-                        <label>Confirm Password:</label>
-                        <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange}/>
-                    </div>
-                    <div>
-                        <label>Email:</label>
-                        <input type="email" name="email" value={formData.email} onChange={handleChange}/>
-                    </div>
-                    <div>
-                        <label>First Name:</label>
-                        <input type="text" name="firstName" value={formData.firstName} onChange={handleChange}/>
-                    </div>
-                    <div>
-                        <label>Last Name:</label>
-                        <input type="text" name="lastName" value={formData.lastName} onChange={handleChange}/>
-                    </div>
-                    <div>
-                        <label>Telephone:</label>
-                        <input type="text" name="telephone" value={formData.telephone} onChange={handleChange}/>
-                    </div>
-                    <button type="submit">Register</button>
-                </form>
-            </div>
-        </>
-    )
-
-}
+  return (
+    <div>
+      <h1>Register</h1>
+      <form onSubmit={handleSubmit}>
+        <div className="my-4">
+          <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            value={userInfo.username}
+            onChange={handleChange}
+            className="bg-slate-200 mx-2 px-2 border border-black rounded"
+          />
+        </div>
+        <div className="my-4">
+          <input
+            type="text"
+            name="first_name"
+            placeholder="First Name"
+            value={userInfo.first_name}
+            onChange={handleChange}
+            className="bg-slate-200 mx-2 px-2 border border-black rounded"
+          />
+        </div>
+        <div className="my-4">
+          <input
+            type="text"
+            name="last_name"
+            placeholder="Last Name"
+            value={userInfo.last_name}
+            onChange={handleChange}
+            className="bg-slate-200 mx-2 px-2 border border-black rounded"
+          />
+        </div>
+        <div className="my-4">
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={userInfo.email}
+            onChange={handleChange}
+            className="bg-slate-200 mx-2 px-2 border border-black rounded"
+          />
+        </div>
+        <div className="my-4">
+          <input
+            type="text"
+            name="telephone"
+            placeholder="Telephone"
+            value={userInfo.telephone}
+            onChange={handleChange}
+            className="bg-slate-200 mx-2 px-2 border border-black rounded"
+          />
+        </div>
+        <div className="my-4">
+          <input
+            type="text"
+            name="address"
+            placeholder="Address"
+            value={userInfo.address}
+            onChange={handleChange}
+            className="bg-slate-200 mx-2 px-2 border border-black rounded"
+          />
+        </div>
+        <div className="my-4">
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={userInfo.password}
+            onChange={handleChange}
+            className="bg-slate-200 mx-2 px-2 border border-black rounded"
+          />
+        </div>
+        <button type="submit" className="bg-slate-200 mx-2 px-2 border border-black rounded">
+          Register
+        </button>
+      </form>
+    </div>
+  );
+};
 
 export default RegistrationPage;

@@ -1,15 +1,15 @@
-// client/src/pages/AdminLoginPage.jsx
+// client/src/pages/StudentLoginPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const AdminLoginPage = () => {
+const StudentLoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch('/adminLogin', {
+    const response = await fetch('/studentLogin', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -19,7 +19,7 @@ const AdminLoginPage = () => {
     const data = await response.json();
     if (response.ok) {
       localStorage.setItem('token', data.token);
-      navigate('/home/admin');
+      navigate('/home/student');
     } else {
       alert(data.errorMessage);
     }
@@ -27,7 +27,7 @@ const AdminLoginPage = () => {
 
   return (
     <div>
-      <h1>Admin Login</h1>
+      <h1>Student Login</h1>
       <form onSubmit={handleSubmit}>
         <div className="my-4">
           <input
@@ -55,4 +55,4 @@ const AdminLoginPage = () => {
   );
 };
 
-export default AdminLoginPage;
+export default StudentLoginPage;
