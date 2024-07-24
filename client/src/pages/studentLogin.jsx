@@ -1,27 +1,35 @@
-// client/src/pages/StudentLoginPage.jsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const StudentLoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch('/studentLogin', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ username, password })
-    });
-    const data = await response.json();
-    if (response.ok) {
-      localStorage.setItem('token', data.token);
-      navigate('/home/student');
-    } else {
-      alert(data.errorMessage);
+    try {
+      const response = await fetch('http://localhost:3001/studentLogin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+      });
+
+      const contentType = response.headers.get('content-type');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      } else if (contentType && contentType.includes('application/json')) {
+        const data = await response.json();
+        localStorage.setItem('token', data.token); // Save the token to localStorage
+        navigate('/home/student'); // Redirect to Student Dashboard
+      } else {
+        throw new Error('Unexpected content type: ' + contentType);
+      }
+    } catch (err) {
+      console.error("Fetch error: ", err);
+      alert(err.message);
     }
   };
 
