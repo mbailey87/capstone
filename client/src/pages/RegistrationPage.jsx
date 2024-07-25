@@ -1,10 +1,8 @@
-// client/src/pages/RegistrationPage.jsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const RegistrationPage = () => {
-  const [userInfo, setUserInfo] = useState({
-    role: 'student',
+  const [formData, setFormData] = useState({
     username: '',
     first_name: '',
     last_name: '',
@@ -13,28 +11,41 @@ const RegistrationPage = () => {
     address: '',
     password: ''
   });
-  const navigate = useNavigate();
+
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUserInfo({ ...userInfo, [name]: value });
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch('/createUser', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(userInfo)
-    });
-    const data = await response.json();
-    if (response.ok) {
-      alert(data.message);
-      navigate('/StudentLoginPage');
-    } else {
-      alert(data.errorMessage);
+    try {
+      const response = await fetch('http://localhost:3001/createUser', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const contentType = response.headers.get('content-type');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      } else if (contentType && contentType.includes('application/json')) {
+        const data = await response.json();
+        alert(data.message);
+        navigate('/home/student'); // Redirect to Student Dashboard after successful registration
+      } else {
+        throw new Error('Unexpected content type: ' + contentType);
+      }
+    } catch (err) {
+      console.error("Fetch error: ", err);
+      alert(err.message);
     }
   };
 
@@ -42,76 +53,18 @@ const RegistrationPage = () => {
     <div>
       <h1>Register</h1>
       <form onSubmit={handleSubmit}>
-        <div className="my-4">
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            value={userInfo.username}
-            onChange={handleChange}
-            className="bg-slate-200 mx-2 px-2 border border-black rounded"
-          />
-        </div>
-        <div className="my-4">
-          <input
-            type="text"
-            name="first_name"
-            placeholder="First Name"
-            value={userInfo.first_name}
-            onChange={handleChange}
-            className="bg-slate-200 mx-2 px-2 border border-black rounded"
-          />
-        </div>
-        <div className="my-4">
-          <input
-            type="text"
-            name="last_name"
-            placeholder="Last Name"
-            value={userInfo.last_name}
-            onChange={handleChange}
-            className="bg-slate-200 mx-2 px-2 border border-black rounded"
-          />
-        </div>
-        <div className="my-4">
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={userInfo.email}
-            onChange={handleChange}
-            className="bg-slate-200 mx-2 px-2 border border-black rounded"
-          />
-        </div>
-        <div className="my-4">
-          <input
-            type="text"
-            name="telephone"
-            placeholder="Telephone"
-            value={userInfo.telephone}
-            onChange={handleChange}
-            className="bg-slate-200 mx-2 px-2 border border-black rounded"
-          />
-        </div>
-        <div className="my-4">
-          <input
-            type="text"
-            name="address"
-            placeholder="Address"
-            value={userInfo.address}
-            onChange={handleChange}
-            className="bg-slate-200 mx-2 px-2 border border-black rounded"
-          />
-        </div>
-        <div className="my-4">
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={userInfo.password}
-            onChange={handleChange}
-            className="bg-slate-200 mx-2 px-2 border border-black rounded"
-          />
-        </div>
+        {Object.keys(formData).map((field) => (
+          <div key={field} className="my-4">
+            <input
+              type={field === 'password' ? 'password' : 'text'}
+              name={field}
+              placeholder={field.replace('_', ' ').toUpperCase()}
+              value={formData[field]}
+              onChange={handleChange}
+              className="bg-slate-200 mx-2 px-2 border border-black rounded"
+            />
+          </div>
+        ))}
         <button type="submit" className="bg-slate-200 mx-2 px-2 border border-black rounded">
           Register
         </button>

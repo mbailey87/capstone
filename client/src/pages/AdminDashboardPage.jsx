@@ -1,35 +1,50 @@
-// client/src/pages/AdminDashboardPage.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const AdminDashboardPage = () => {
-  const [students, setStudents] = useState([]);
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const token = localStorage.getItem('token');
-      const response = await fetch('/home/admin/getStudents', {
-        headers: {
-          'Authorization': `Bearer ${token}`
+      try {
+        const response = await fetch('http://localhost:3001/home/admin', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+
+        const contentType = response.headers.get('content-type');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        } else if (contentType && contentType.includes('application/json')) {
+          const data = await response.json();
+          setData(data);
+        } else {
+          throw new Error('Unexpected content type: ' + contentType);
         }
-      });
-      const data = await response.json();
-      setStudents(data.message);
+      } catch (err) {
+        setError(err.message);
+        console.error("Fetch error: ", err);
+      }
     };
 
     fetchData();
   }, []);
 
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!data) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div>
       <h1>Admin Dashboard</h1>
-      <h2>Registered Students</h2>
-      <ul>
-        {students.map(student => (
-          <li key={student.id}>
-            {student.first_name} {student.last_name} - {student.email}
-          </li>
-        ))}
-      </ul>
+      <p>{data.message}</p>
     </div>
   );
 };
