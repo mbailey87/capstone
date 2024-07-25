@@ -9,13 +9,15 @@ import Footer from './components/Footer';
 import AdminLoginPage from './pages/AdminLoginPage';
 import StudentLoginPage from './pages/StudentLoginPage';
 import RegistrationPage from './pages/RegistrationPage';
+import StudentDashboardPage from './pages/StudentDashboardPage';
+import CoursesPage from './pages/CoursesPage';
 
 function App() {
   const [count, setCount] = useState(0);
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    fetch("/api")
+    fetch("/server/api")
       .then((res) => res.json())
       .then((data) => setData(data.message));
   }, []);
@@ -26,9 +28,11 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
-          <Route path="/AdminLoginPage" element={<AdminLoginPage />} />
-          <Route path="/StudentLoginPage" element={<StudentLoginPage />} />
+          <Route path="/adminLogin" element={<AdminLoginPage />} />
+          <Route path="/studentLogin" element={<StudentLoginPage />} />
           <Route path="/RegistrationPage" element={<RegistrationPage />} />
+          <Route path="/home/student" element={<StudentDashboardPage />} />
+          <Route path="/home/courses" element={<CoursesPage />} />
         </Routes>
         <div className='mt-auto self-center'>
           <div className="card mt-auto">

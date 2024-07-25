@@ -5,6 +5,7 @@ const { expressjwt } = require("express-jwt");
 require("dotenv").config();
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const cors = require("cors");
 const db = require("./config/database");
 
 const PORT = process.env.PORT || 3001;
@@ -12,6 +13,7 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 // Have Node serve the files for our built React app
 app.use(express.static(path.resolve(__dirname, "../client/dist")));
@@ -56,13 +58,12 @@ const loginHandler = async (req, res, role) => {
     if (!user[0]) {
       return res.status(401).json({ errorMessage: "Invalid Credentials" });
     };
-    console.log('found user from database: ', user);
   
     // Check if passwords match and create token, or send error message if they don't
     bcrypt.compare(req.body.password, user[0].password_hash, (err, result) => {
       if (err) throw err;
       if (result) {
-        const token = jwt.sign({username: user[0].username, admin: role === "admin"}, process.env.secret, {
+        const token = jwt.sign({username: user[0].username, admin: role === "admin"}, process.env.SECRET, {
           algorithm: "HS256",
           expiresIn: "15m",
         });
@@ -87,13 +88,11 @@ app.post("/adminLogin", (req, res) => loginHandler(req, res, "admin"));
 // All home paths require token to access
 app.use(
   "/home", 
-  expressjwt({ secret: process.env.secret, algorithms: ["HS256"] })
+  expressjwt({ secret: process.env.SECRET, algorithms: ["HS256"] })
 );
 
-// Handle GET requests to /home/student route
-app.get("/home/student", (req, res) => {
-  res.json({ message: "Hello student!" });
-});
+// Handle GET requests to /home/courses route
+app.get("/home/courses", db.getCourses);
 
 // Middleware to check if a user is an admin
 function checkAdmin(req, res, next) {

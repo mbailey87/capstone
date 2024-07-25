@@ -1,7 +1,8 @@
 const { Pool } = require("pg");
 
 let dbConfig = {
-    connectionString: process.env.DATABASE_URL
+    connectionString: process.env.DATABASE_URL,
+    ssl: {rejectUnauthorized: false},
 };
 
 const pool = new Pool(dbConfig);
@@ -30,13 +31,19 @@ exports.createUser = (req, res, userInfo, password_hash) => {
     });
 };
 
+// Query database to find and display all courses
+exports.getCourses = (req, res) => {
+    pool.query('SELECT * FROM courses', (err, result) => {
+        if (err) throw err;
+        res.json({ message: result.rows });
+        // res.status(200).json(result.rows);
+    });
+};
+
 // Query database to find and display all students
 exports.getStudents = (req, res) => {
-    pool.query('SELECT * FROM students', (err, result) => {
+    pool.query('SELECT student_id, first_name, last_name, email, telephone, address FROM students', (err, result) => {
         if (err) throw err;
-        for (const row of result.rows) {
-            console.log(row);
-        };
         res.json({ message: result.rows });
         // res.status(200).json(result.rows);
     });
