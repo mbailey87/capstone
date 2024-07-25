@@ -12,12 +12,14 @@ import HomePage from './pages/HomePage';
 import StudentDashboardPage from './pages/StudentDashboardPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import ProtectedRoute from './components/ProtectedRoute'; // Import ProtectedRoute
+import StudentDashboardPage from './pages/StudentDashboardPage';
+import CoursesPage from './pages/CoursesPage';
 
 function App() {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    fetch("/api")
+    fetch("/server/api")
       .then((res) => res.json())
       .then((data) => setData(data.message));
   }, []);
@@ -27,12 +29,9 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
-          <Route path="/" element={<HomePage />} />
           <Route path="/AdminLoginPage" element={<AdminLoginPage />} />
-          <Route path="/studentLogin" element={<StudentLoginPage />} />
+          <Route path="/StudentLoginPage" element={<StudentLoginPage />} />
           <Route path="/RegistrationPage" element={<RegistrationPage />} />
-          <Route path="/home/student" element={<ProtectedRoute element={StudentDashboardPage} />} /> {/* Protect StudentDashboardPage route */}
-          <Route path="/home/admin" element={<ProtectedRoute element={AdminDashboardPage} />} /> {/* Protect AdminDashboardPage route */}
         </Routes>
         <div className='mt-auto self-center'>
           <div className="card mt-auto">

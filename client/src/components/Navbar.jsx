@@ -15,7 +15,7 @@ const Navbar = () => {
           <Link to="/studentLogin">Student Login</Link>
         </li>
         <li className="hover:text-purple">
-          <Link to="/AdminLoginPage">Admin Login</Link>
+          <Link to="/adminLogin">Admin Login</Link>
         </li>
         <li className="hover:text-purple">
           <Link to="/RegistrationPage">Register</Link>
