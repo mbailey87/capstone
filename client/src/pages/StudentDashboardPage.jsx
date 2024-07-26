@@ -6,32 +6,40 @@ const StudentDashboardPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await fetch('http://localhost:3001/home/student', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error('No authorization token found');
+            }
 
-        const contentType = response.headers.get('content-type');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        } else if (contentType && contentType.includes('application/json')) {
-          const data = await response.json();
-          setData(data);
-        } else {
-          throw new Error('Unexpected content type: ' + contentType);
+            const response = await fetch('http://localhost:3001/home/student', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                const data = await response.json();
+                setData(data);
+            } else {
+                throw new Error('Unexpected content type: ' + contentType);
+            }
+        } catch (err) {
+            setError(err.message);
+            console.error("Fetch error: ", err);
         }
-      } catch (err) {
-        setError(err.message);
-        console.error("Fetch error: ", err);
-      }
     };
 
     fetchData();
-  }, []);
+}, []);
+
 
   if (error) {
     return <div>Error: {error}</div>;

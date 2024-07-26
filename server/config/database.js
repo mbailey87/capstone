@@ -18,30 +18,36 @@ exports.getUser = async (username, role) => {
 };
 
 // Query database to insert new user info
-exports.createUser = (req, res, userInfo, password_hash) => {
+exports.createUser = (req, res, userInfo) => {
     pool.query(`
         INSERT INTO students 
             (username, first_name, last_name, email, telephone, address, password_hash) 
         VALUES 
             ('${userInfo.username}', '${userInfo.first_name}', '${userInfo.last_name}', '${userInfo.email}',
-                '${userInfo.telephone}', '${userInfo.address}', '${password_hash}')
+                '${userInfo.telephone}', '${userInfo.address}', '${userInfo.password_hash}')
         `, (err, result) => {
             if (err) {
-                console.error('Database insert error: ', err); // Log the error for debugging purposes
-                return res.status(500).json({ errorMessage: 'Database insert error' }); // Send error response if insertion fails
+                console.error('Database insert error: ', err);
+                return res.status(500).json({ errorMessage: 'Database insert error' });
             }
-            res.json({ message: `Successfully added new user ${userInfo.username}` }); // Send success response if insertion succeeds
+            res.json({ message: `Successfully added new user ${userInfo.username}` });
     });
 };
 
 // Query database to find and display all students
 exports.getStudents = (req, res) => {
     pool.query('SELECT * FROM students', (err, result) => {
-        if (err) throw err; // Throw an error if the query fails
-        for (const row of result.rows) {
-            console.log(row); // Log each row for debugging purposes
+        if (err) {
+            console.error('Database query error: ', err); 
+            return res.status(500).json({ errorMessage: 'Database query error' });
         }
+
+        // Log each row for debugging purposes
+        for (const row of result.rows) {
+            console.log(row); 
+        }
+
         res.json({ message: result.rows }); // Send the result rows as JSON response
-        // res.status(200).json(result.rows); // Alternative way to send the result rows as JSON response
+        // Ensure no other response is sent after this
     });
 };

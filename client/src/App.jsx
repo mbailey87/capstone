@@ -6,7 +6,7 @@ import './index.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AdminLoginPage from './pages/AdminLoginPage';
-import StudentLoginPage from './pages/studentLogin';
+import StudentLoginPage from './pages/StudentLogin';
 import RegistrationPage from './pages/RegistrationPage';
 import HomePage from './pages/HomePage';
 import StudentDashboardPage from './pages/StudentDashboardPage';

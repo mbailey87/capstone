@@ -14,7 +14,7 @@ const AdminDashboardPage = () => {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
         });
-
+  
         const contentType = response.headers.get('content-type');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -29,7 +29,7 @@ const AdminDashboardPage = () => {
         console.error("Fetch error: ", err);
       }
     };
-
+  
     fetchData();
   }, []);
 
