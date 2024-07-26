@@ -7,18 +7,25 @@ const StudentDashboardPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:3001/home/student', {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('No authorization token found');
+        }
+
+        const response = await fetch('http://localhost:3001/studentDashboard', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            'Authorization': `Bearer ${token}`
           }
         });
 
-        const contentType = response.headers.get('content-type');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
-        } else if (contentType && contentType.includes('application/json')) {
+        }
+
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
           const data = await response.json();
           setData(data);
         } else {
@@ -44,7 +51,12 @@ const StudentDashboardPage = () => {
   return (
     <div>
       <h1>Student Dashboard</h1>
-      <p>{data.message}</p>
+      <p>Username: {data.username}</p>
+      <p>First Name: {data.first_name}</p>
+      <p>Last Name: {data.last_name}</p>
+      <p>Email: {data.email}</p>
+      <p>Telephone: {data.telephone}</p>
+      <p>Address: {data.address}</p>
     </div>
   );
 };

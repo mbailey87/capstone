@@ -1,52 +1,59 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
 
-const StudentLoginPage = () => {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
-    const navigate = useNavigate();
+const StudentDashboardPage = () => {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('No authorization token found');
+        }
 
-        // Send POST request to server with login info
-        const response = await fetch("/server/studentLogin", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ username, password }),
+        const response = await fetch('http://localhost:3001/studentDashboard', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
         });
-        
-        const data = await response.json();
-        
-        // If user info is valid, store token and navigate to home page, otherwise display error
-        if (response.ok) {
-            localStorage.setItem("token", data.token);
-            navigate("/home/student");
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const data = await response.json();
+          setData(data);
         } else {
-            setErrorMessage(data.errorMessage);
-        };
+          throw new Error('Unexpected content type: ' + contentType);
+        }
+      } catch (err) {
+        setError(err.message);
+        console.error("Fetch error: ", err);
+      }
     };
 
-    return (
-        <>
-            <h1>Student Login</h1>
-            <form onSubmit={handleLogin}>
-                <div>
-                    <label>Username:</label>
-                    <input type="text" value={username} onChange={(e) => setUsername(e.target.value)}/>
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-                </div>
-                <button type="submit">Login</button>
-            </form>
-            {errorMessage && <p>{errorMessage}</p>}
-        </>
-    )
-}
+    fetchData();
+  }, []);
 
-export default StudentLoginPage;
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!data) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div>
+      <h1>Student Dashboard</h1>
+      <p>{data.message}</p>
+    </div>
+  );
+};
+
+export default StudentDashboardPage;

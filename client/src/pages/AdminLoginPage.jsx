@@ -39,7 +39,7 @@ const AdminLoginPage = () => {
         const data = await response.json(); // Parse the response as JSON
         console.log('Response data:', data);
         localStorage.setItem('token', data.token); // Store the token in local storage
-        navigate('/home/admin'); // Redirect to the admin dashboard
+        navigate('/adminDashboard'); // Redirect to the admin dashboard
       } 
       // If the content type is not JSON, throw an error
       else {

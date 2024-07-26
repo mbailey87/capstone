@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 
 const RegistrationPage = () => {
   const [formData, setFormData] = useState({
@@ -38,8 +38,8 @@ const RegistrationPage = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       } else if (contentType && contentType.includes('application/json')) {
         const data = await response.json();
-        alert(data.message);
-        navigate('/home/student'); // Redirect to Student Dashboard after successful registration
+        alert(`Welcome ${formData.username}!`);
+        navigate('/studentLogin'); // Redirect to Student Login after successful registration
       } else {
         throw new Error('Unexpected content type: ' + contentType);
       }

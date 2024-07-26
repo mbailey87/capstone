@@ -1,30 +1,26 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import logo from "../assets/photos/logo.webp"
+import React from 'react';
+import { Link } from 'react-router-dom';
+import logo from '../assets/photos/logo.webp'; // Adjust the path to your logo
 
 const Navbar = () => {
   return (
-    <>
-    <nav className="flex justify-between">
-      <img className="w-24" src={logo}alt="" />
-      <ul className="flex justify-between w-1/2">
-        <li className="hover:text-purple">
-          <Link to="/">Home</Link>
-        </li>
-        <li className="hover:text-purple">
-          <Link to="/studentLogin">Student Login</Link>
-        </li>
-        <li className="hover:text-purple">
-          <Link to="/adminLogin">Admin Login</Link>
-        </li>
-        <li className="hover:text-purple">
-          <Link to="/RegistrationPage">Register</Link>
-        </li>
-      </ul>
+    <nav >
+      <div className="container mx-auto flex justify-between items-center">
+        <div className=" font-bold text-xl">
+          <Link to="/">
+            <img className="w-24" src={logo} alt="" />
+          </Link>
+        </div>
+        <div className="flex space-x-4">
+          <Link to="/" className="hover:text-purple">Home</Link>
+          <Link to="/adminLogin" className="hover:text-purple">Admin Login</Link>
+          <Link to="/studentLogin" className="hover:text-purple">Student Login</Link>
+          <Link to="/registration" className="hover:text-purple">Register</Link>
+          <Link to="/courses" className="hover:text-purple">Courses</Link>
+        </div>
+      </div>
     </nav>
-    </>
   );
 };
-//test
-//test 2
+
 export default Navbar;
