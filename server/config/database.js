@@ -2,7 +2,7 @@ const { Pool } = require("pg");
 
 let dbConfig = {
     connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false } // Ensure SSL connection with database
+    ssl: { rejectUnauthorized: false },
 };
 
 const pool = new Pool(dbConfig);
@@ -14,6 +14,7 @@ exports.getUser = async (username, role) => {
         return result.rows;
     } catch (err) {
         console.error('Database query error: ', err);
+        throw err;
     }
 };
 
@@ -34,20 +35,25 @@ exports.createUser = (req, res, userInfo) => {
     });
 };
 
-// Query database to find and display all students
-exports.getStudents = (req, res) => {
-    pool.query('SELECT * FROM students', (err, result) => {
+// Query database to find and display all courses
+exports.getCourses = (req, res) => {
+    pool.query('SELECT * FROM courses', (err, result) => {
         if (err) {
-            console.error('Database query error: ', err); 
+            console.error('Database query error: ', err);
             return res.status(500).json({ errorMessage: 'Database query error' });
         }
-
-        // Log each row for debugging purposes
-        for (const row of result.rows) {
-            console.log(row); 
-        }
-
-        res.json({ message: result.rows }); // Send the result rows as JSON response
-        // Ensure no other response is sent after this
+        res.json({ message: result.rows });
     });
 };
+
+// Query database to find and display all students
+exports.getStudents = (req, res) => {
+    pool.query('SELECT student_id, first_name, last_name, email, telephone, address FROM students', (err, result) => {
+        if (err) {
+            console.error('Database query error: ', err);
+            return res.status(500).json({ errorMessage: 'Database query error' });
+        }
+        res.json({ message: result.rows });
+    });
+};
+   

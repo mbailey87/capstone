@@ -38,8 +38,7 @@ const StudentDashboardPage = () => {
     };
 
     fetchData();
-}, []);
-
+  }, []);
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -52,12 +51,7 @@ const StudentDashboardPage = () => {
   return (
     <div>
       <h1>Student Dashboard</h1>
-      <p>Username: {data.username}</p>
-      <p>First Name: {data.first_name}</p>
-      <p>Last Name: {data.last_name}</p>
-      <p>Email: {data.email}</p>
-      <p>Telephone: {data.telephone}</p>
-      <p>Address: {data.address}</p>
+      <p>{data.message}</p>
     </div>
   );
 };
