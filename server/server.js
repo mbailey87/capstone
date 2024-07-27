@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: 'https://capstone-client-a8rf.onrender.com' }));
 
 // Serve the React app files
 app.use(express.static(path.resolve(__dirname, "../client/dist")));
