@@ -33,7 +33,7 @@ const StudentLoginPage = () => {
         const data = await response.json();
         console.log('Response data:', data);
         localStorage.setItem('token', data.token);
-        navigate('/studentDashboard');
+        navigate('/student-dashboard');
       }
       // If content type is not JSON, throw error
       else {

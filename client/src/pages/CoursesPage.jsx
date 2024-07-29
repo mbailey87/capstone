@@ -54,7 +54,7 @@ const CoursesPage = () => {
             };
 
             try {
-                const response = await fetch("/server/home/courses", {
+                const response = await fetch("/server/courses", {
                     headers: {
                         "Authorization": `Bearer ${token}`
                     },

@@ -12,7 +12,7 @@ const StudentDashboardPage = () => {
           throw new Error('No authorization token found');
         }
 
-        const response = await fetch('http://localhost:3001/studentDashboard', {
+        const response = await fetch('/server/studentDashboard', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

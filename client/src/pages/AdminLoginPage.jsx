@@ -13,7 +13,7 @@ const AdminLoginPage = () => {
 
     try {
       // Send a POST request to the server with the login credentials
-      const response = await fetch('http://localhost:3001/adminLogin', {
+      const response = await fetch('/server/adminLogin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -39,7 +39,7 @@ const AdminLoginPage = () => {
         const data = await response.json(); // Parse the response as JSON
         console.log('Response data:', data);
         localStorage.setItem('token', data.token); // Store the token in local storage
-        navigate('/adminDashboard'); // Redirect to the admin dashboard
+        navigate('/admin-dashboard'); // Redirect to the admin dashboard
       } 
       // If the content type is not JSON, throw an error
       else {

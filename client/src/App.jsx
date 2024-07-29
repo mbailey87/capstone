@@ -27,16 +27,16 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
-          <Route path="/adminLogin" element={<AdminLoginPage />} />
-          <Route path="/studentLogin" element={<StudentLoginPage />} />
+          <Route path="/admin-login" element={<AdminLoginPage />} />
+          <Route path="/student-login" element={<StudentLoginPage />} />
           <Route path="/registration" element={<RegistrationPage />} />
           <Route path="/" element={<HomePage />} />
           <Route
-            path="/studentDashboard"
+            path="/student-dashboard"
             element={<ProtectedRoute element={StudentDashboardPage} />}
           />
           <Route
-            path="/adminDashboard"
+            path="/admin-dashboard"
             element={<ProtectedRoute element={AdminDashboardPage} />}
           />
           <Route

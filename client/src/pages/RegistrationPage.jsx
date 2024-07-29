@@ -25,7 +25,7 @@ const RegistrationPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3001/createUser', {
+      const response = await fetch('/server/createUser', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -39,7 +39,7 @@ const RegistrationPage = () => {
       } else if (contentType && contentType.includes('application/json')) {
         const data = await response.json();
         alert(`Welcome ${formData.username}!`);
-        navigate('/studentLogin'); // Redirect to Student Login after successful registration
+        navigate('/student-login'); // Redirect to Student Login after successful registration
       } else {
         throw new Error('Unexpected content type: ' + contentType);
       }
