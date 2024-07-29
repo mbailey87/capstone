@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 const AdminDashboardPage = () => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
+  const [studentData, setStudentData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,7 +28,10 @@ const AdminDashboardPage = () => {
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
           const data = await response.json();
+          console.log(data)
+          console.log(data.students)
           setData(data);
+          setStudentData(data.students || []); 
         } else {
           throw new Error('Unexpected content type: ' + contentType);
         }
@@ -35,6 +39,7 @@ const AdminDashboardPage = () => {
         setError(err.message);
         console.error("Fetch error: ", err);
       }
+      
     };
 
     fetchData();
@@ -49,6 +54,7 @@ const AdminDashboardPage = () => {
   }
 
   return (
+    <>
     <div>
       <h1>Admin Dashboard</h1>
       <p>Username: {data.username}</p>
@@ -58,6 +64,35 @@ const AdminDashboardPage = () => {
       <p>Telephone: {data.telephone}</p>
       <p>Address: {data.address}</p>
     </div>
+    <div>
+      <h2>Students</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Student ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Telephone</th>
+            <th>Address</th>
+          </tr>
+        </thead>
+        <tbody>
+          {studentData.map(student => (
+            <tr key={student.id}>
+              <td>{student.id}</td>
+              <td>{student.first_name}</td>
+              <td>{student.last_name}</td>
+              <td>{student.email}</td>
+              <td>{student.telephone}</td>
+              <td>{student.address}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    </>    
+
   );
 };
 

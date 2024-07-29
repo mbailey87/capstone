@@ -22,6 +22,8 @@ app.get("/api", (req, res) => {
   res.json({ message: "Hello from server!" });
 });
 
+// Handle GET requests to /courses route
+
 // Create new user in the database
 app.post("/createUser", async (req, res) => {
   if (!req.body || Object.keys(req.body).length === 0) {
@@ -128,7 +130,10 @@ app.use("/adminDashboard", checkAdmin);
 
 // Handle GET requests to /adminDashboard route
 app.get("/adminDashboard", (req, res) => {
-  res.json(req.auth); // Send user info from JWT payload
+  let payload = req.auth;
+  payload.students = [{id: 1, first_name: "John", last_name: "Doe"}, {id: 2, first_name: "Jane", last_name: "Smith"}];
+  console.log(payload);
+  res.json(payload); // Send user info from JWT payload
 });
 
 app.listen(PORT, () => {
