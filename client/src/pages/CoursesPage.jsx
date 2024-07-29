@@ -1,48 +1,9 @@
 import React, { useEffect, useState } from "react";
+import CourseList from '../components/CourseList';
 
 const CoursesPage = () => {
     const [data, setData] = useState(null);
-    const [courseTable, setCourseTable] = useState(null);
     const [errorMessage, setErrorMessage] = useState("");
-
-    const makeTable = () => {
-        let coursesRows = [];
-        
-        for (let i = 0; i < data.length; i++) {
-            coursesRows.push(
-                <tr key={data[i].string_id}>
-                    <td>{data[i].string_id}</td>
-                    <td>{data[i].title}</td>
-                    <td>{data[i].description}</td>
-                    <td>{data[i].schedule}</td>
-                    <td>{data[i].classroom_number}</td>
-                    <td>{data[i].maximum_capacity}</td>
-                    <td>{data[i].credit_hours}</td>
-                    <td>{data[i].tuition_cost}</td>
-                </tr>
-            );
-        };
-
-        setCourseTable(
-            <table>
-                <thead>
-                    <tr key="header">
-                        <th>Course ID</th>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Schedule</th>
-                        <th>Classroom Number</th>
-                        <th>Max Capacity</th>
-                        <th>Credit Hours</th>
-                        <th>Tuition Cost</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {coursesRows}
-                </tbody>
-            </table>
-        );
-    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -54,7 +15,7 @@ const CoursesPage = () => {
             };
 
             try {
-                const response = await fetch("http://localhost:3001/courses", {
+                const response = await fetch("/courses", {
                     headers: {
                         "Authorization": `Bearer ${token}`
                     },
@@ -73,19 +34,13 @@ const CoursesPage = () => {
             };
         };
 
-    fetchData();
+        fetchData();
     }, []);
-
-    useEffect(() => {
-        if (data) {
-            makeTable();
-        };
-    }, [data]);
     
     return (
         <>
             <h1>Courses</h1>
-            <h2>{!courseTable ? "Loading..." : courseTable}</h2>
+            <CourseList data={data} />
             {errorMessage && <p>{errorMessage}</p>}
         </>
     );

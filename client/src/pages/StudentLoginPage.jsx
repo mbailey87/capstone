@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const StudentLoginPage = () => {
+const StudentLoginPage = ({ onLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -10,40 +10,30 @@ const StudentLoginPage = () => {
     e.preventDefault();
 
     try {
-      // Send POST request to server with login credentials
       const response = await fetch("http://localhost:3001/studentLogin", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ username, password }),
       });
 
-      // Get content type from response headers
       const contentType = response.headers.get('content-type');
 
-      // If response is not OK, throw error
       if (!response.ok) {
-        const errorText = await response.text(); // Get error text
-        console.error('Response text:', errorText);
+        const errorText = await response.text();
         throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
-      } 
-      // If content type is JSON, parse response, store token, and redirect to student dashboard
-      else if (contentType && contentType.includes('application/json')) {
+      } else if (contentType && contentType.includes('application/json')) {
         const data = await response.json();
-        console.log('Response data:', data);
         localStorage.setItem('token', data.token);
-        navigate('/studentDashboard');
-      }
-      // If content type is not JSON, throw error
-      else {
+        onLogin(data.token); // Call onLogin with the token
+        navigate('/student-dashboard'); // Redirect to the student dashboard
+      } else {
         throw new Error('Unexpected content type: ' + contentType);
       }
     } catch (err) {
-      // Log and alert any errors that occur during fetch operation
-      console.error("Fetch error: ", err);
       alert(err.message);
-    };
+    }
   };
 
   return (

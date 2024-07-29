@@ -14,7 +14,6 @@ const app = express();
 app.use(express.json());
 
 // CORS middleware
-const cors = require('cors');
 app.use(cors());
 
 // Serve the React app files
@@ -143,6 +142,6 @@ app.get("/adminDashboard", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+  console.log(`Server listening on port ${PORT}`); 
 });
  
