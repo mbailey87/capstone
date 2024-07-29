@@ -12,7 +12,7 @@ const RegistrationPage = () => {
     password: ''
   });
 
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,12 +39,11 @@ const RegistrationPage = () => {
       } else if (contentType && contentType.includes('application/json')) {
         const data = await response.json();
         alert(`Welcome ${formData.username}!`);
-        navigate('/studentLogin'); // Redirect to Student Login after successful registration
+        navigate('/student-login'); // Redirect to Student Login after successful registration
       } else {
         throw new Error('Unexpected content type: ' + contentType);
       }
     } catch (err) {
-      console.error("Fetch error: ", err);
       alert(err.message);
     }
   };

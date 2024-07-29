@@ -7,12 +7,14 @@ const bcrypt = require('bcrypt');
 const cors = require("cors");
 const db = require("./config/database");
 
-const saltRounds = 10;
 const PORT = process.env.PORT || 3001;
+
 const app = express();
 
 app.use(express.json());
-app.use(cors({ origin: 'https://capstone-client-a8rf.onrender.com' }));
+
+// CORS middleware
+app.use(cors());
 
 // Serve the React app files
 app.use(express.static(path.resolve(__dirname, "../client/dist")));
@@ -22,10 +24,12 @@ app.get("/api", (req, res) => {
   res.json({ message: "Hello from server!" });
 });
 
+// Handle GET requests to /courses route
+
 // Create new user in the database
 app.post("/createUser", async (req, res) => {
   if (!req.body || Object.keys(req.body).length === 0) {
-    return res.status(400).json({ errorMessage: "No user info to process" });
+      return res.status(400).json({ errorMessage: "No user info to process" });
   }
 
   const { username, first_name, last_name, email, telephone, address, password } = req.body;
@@ -44,10 +48,11 @@ app.post("/createUser", async (req, res) => {
       return res.status(400).json({ errorMessage: "All fields are required" });
     }
   } catch (err) {
-    console.error("Database query error: ", err);
-    return res.status(500).json({ errorMessage: "Internal Server Error" });
+      console.error("Database query error: ", err);
+      return res.status(500).json({ errorMessage: "Internal Server Error" });
   }
 });
+
 
 // Validate login credentials and create token
 const loginHandler = async (req, res, role) => {
@@ -98,6 +103,7 @@ const loginHandler = async (req, res, role) => {
   }
 };
 
+
 // Validate student login credentials and get token
 app.post("/studentLogin", (req, res) => loginHandler(req, res, "student"));
 
@@ -117,8 +123,9 @@ app.get("/studentDashboard", (req, res) => {
 
 // Middleware to check if a user is an admin
 function checkAdmin(req, res, next) {
+  console.log('checkAdmin middleware:', req.auth);
   if (!req.auth.admin) {
-    return res.status(403).json({ errorMessage: "Access denied" });
+      return res.status(403).json({ errorMessage: "Access denied" });
   }
   next();
 }
@@ -128,9 +135,13 @@ app.use("/adminDashboard", checkAdmin);
 
 // Handle GET requests to /adminDashboard route
 app.get("/adminDashboard", (req, res) => {
-  res.json(req.auth); // Send user info from JWT payload
+  let payload = req.auth;
+  payload.students = [{id: 1, first_name: "John", last_name: "Doe"}, {id: 2, first_name: "Jane", last_name: "Smith"}];
+  console.log(payload);
+  res.json(payload); // Send user info from JWT payload
 });
 
 app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+  console.log(`Server listening on port ${PORT}`); 
 });
+ 
