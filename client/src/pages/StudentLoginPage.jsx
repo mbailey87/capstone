@@ -11,7 +11,7 @@ const StudentLoginPage = () => {
 
     try {
       // Send POST request to server with login credentials
-      const response = await fetch("/server/studentLogin", {
+      const response = await fetch("/studentLogin", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
