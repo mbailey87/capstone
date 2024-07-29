@@ -12,7 +12,7 @@ const AdminDashboardPage = () => {
           throw new Error('No authorization token found');
         }
 
-        const response = await fetch('/server/adminDashboard', {
+        const response = await fetch('/adminDashboard', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

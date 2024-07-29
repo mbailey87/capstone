@@ -13,7 +13,7 @@ const AdminLoginPage = () => {
 
     try {
       // Send a POST request to the server with the login credentials
-      const response = await fetch('/server/adminLogin', {
+      const response = await fetch('/adminLogin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

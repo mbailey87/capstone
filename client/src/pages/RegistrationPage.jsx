@@ -25,7 +25,7 @@ const RegistrationPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('/server/createUser', {
+      const response = await fetch('/createUser', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

@@ -17,7 +17,7 @@ function App() {
   const [data, setData] = useState(null); // Declare and initialize the data variable
 
   useEffect(() => {
-    fetch("/server/api")
+    fetch("/api")
       .then((res) => res.json())
       .then((data) => setData(data.message));
   }, []);
