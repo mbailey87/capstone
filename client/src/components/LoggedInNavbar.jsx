@@ -23,7 +23,7 @@ const LoggedInNavbar = ({ isAdmin, onLogout }) => {
           {isAdmin ? (
             <>
               <Link to="/admin-dashboard" className="hover:text-purple">Admin Dashboard</Link>
-              <Link to="/create-user" className="hover:text-purple">Register New Student</Link>
+              <Link to="/create-user" className="hover:text-purple">Register New User</Link>
             </>
           ) : (
             <Link to="/student-dashboard" className="hover:text-purple">Student Dashboard</Link>

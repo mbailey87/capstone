@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const AdminLoginPage = ({ onLogin }) => {
+const AdminLoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
@@ -15,22 +15,17 @@ const AdminLoginPage = ({ onLogin }) => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ username, password }) // Convert the data to JSON string
+        body: JSON.stringify({ username, password })
       });
-
-      const contentType = response.headers.get('content-type');
 
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
-      } else if (contentType && contentType.includes('application/json')) {
-        const data = await response.json();
-        localStorage.setItem('token', data.token);
-        onLogin(data.token); // Call onLogin with the token
-        navigate('/admin-dashboard'); // Redirect to the admin dashboard
-      } else {
-        throw new Error('Unexpected content type: ' + contentType);
       }
+
+      const data = await response.json();
+      localStorage.setItem('token', data.token);
+      navigate('/admin-dashboard');
     } catch (err) {
       setError(err.message);
     }

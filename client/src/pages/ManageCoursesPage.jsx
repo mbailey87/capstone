@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
+import CourseList from '../components/CourseList';
 
 const ManageCoursesPage = () => {
+  const [courses, setCourses] = useState([]);
   const [courseData, setCourseData] = useState({
-    courseId: '',
+    course_id: '',
     title: '',
     description: '',
     schedule: '',
-    classroomNumber: '',
-    maximumCapacity: '',
-    creditHours: '',
-    tuitionCost: ''
+    classroom_number: '',
+    maximum_capacity: '',
+    credit_hours: '',
+    tuition_cost: ''
   });
 
   const handleChange = (e) => {
@@ -20,143 +22,59 @@ const ManageCoursesPage = () => {
     }));
   };
 
-  const handleCreateCourse = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const response = await fetch('http://localhost:3001/createCourse', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(courseData)
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      alert(`Course ${data.title} created successfully!`);
-    } catch (err) {
-      console.error("Fetch error: ", err);
-      alert(err.message);
-    }
+    setCourses([...courses, courseData]);
+    setCourseData({
+      course_id: '',
+      title: '',
+      description: '',
+      schedule: '',
+      classroom_number: '',
+      maximum_capacity: '',
+      credit_hours: '',
+      tuition_cost: ''
+    });
   };
 
-  const handleDeleteCourse = async (courseId) => {
-    try {
-      const response = await fetch(`http://localhost:3001/deleteCourse/${courseId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      alert(`Course ${courseId} deleted successfully!`);
-    } catch (err) {
-      console.error("Fetch error: ", err);
-      alert(err.message);
-    }
+  const handleRemoveCourse = (course_id) => {
+    const newCourses = courses.filter(course => course.course_id !== course_id);
+    setCourses(newCourses);
   };
 
   return (
-    <div>
-      <h1>Manage Courses</h1>
-      <form onSubmit={handleCreateCourse}>
-        <div className="my-4">
-          <input
-            type="text"
-            name="courseId"
-            placeholder="COURSE ID"
-            value={courseData.courseId}
-            onChange={handleChange}
-            className="bg-slate-200 mx-2 px-2 border border-black rounded"
-          />
+    <div className="container mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Manage Courses</h1>
+      <form onSubmit={handleSubmit} className="mb-6">
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          {Object.keys(courseData).map((field) => (
+            field !== 'description' ? (
+              <input
+                key={field}
+                type="text"
+                name={field}
+                placeholder={field.replace('_', ' ').toUpperCase()}
+                value={courseData[field]}
+                onChange={handleChange}
+                className="p-2 border border-gray-300 rounded"
+              />
+            ) : (
+              <textarea
+                key={field}
+                name={field}
+                placeholder={field.replace('_', ' ').toUpperCase()}
+                value={courseData[field]}
+                onChange={handleChange}
+                className="p-2 border border-gray-300 rounded"
+              />
+            )
+          ))}
         </div>
-        <div className="my-4">
-          <input
-            type="text"
-            name="title"
-            placeholder="TITLE"
-            value={courseData.title}
-            onChange={handleChange}
-            className="bg-slate-200 mx-2 px-2 border border-black rounded"
-          />
-        </div>
-        <div className="my-4">
-          <textarea
-            name="description"
-            placeholder="DESCRIPTION"
-            value={courseData.description}
-            onChange={handleChange}
-            className="bg-slate-200 mx-2 px-2 border border-black rounded"
-          />
-        </div>
-        <div className="my-4">
-          <input
-            type="text"
-            name="schedule"
-            placeholder="SCHEDULE"
-            value={courseData.schedule}
-            onChange={handleChange}
-            className="bg-slate-200 mx-2 px-2 border border-black rounded"
-          />
-        </div>
-        <div className="my-4">
-          <input
-            type="text"
-            name="classroomNumber"
-            placeholder="CLASSROOM NUMBER"
-            value={courseData.classroomNumber}
-            onChange={handleChange}
-            className="bg-slate-200 mx-2 px-2 border border-black rounded"
-          />
-        </div>
-        <div className="my-4">
-          <input
-            type="text"
-            name="maximumCapacity"
-            placeholder="MAXIMUM CAPACITY"
-            value={courseData.maximumCapacity}
-            onChange={handleChange}
-            className="bg-slate-200 mx-2 px-2 border border-black rounded"
-          />
-        </div>
-        <div className="my-4">
-          <input
-            type="text"
-            name="creditHours"
-            placeholder="CREDIT HOURS"
-            value={courseData.creditHours}
-            onChange={handleChange}
-            className="bg-slate-200 mx-2 px-2 border border-black rounded"
-          />
-        </div>
-        <div className="my-4">
-          <input
-            type="text"
-            name="tuitionCost"
-            placeholder="TUITION COST"
-            value={courseData.tuitionCost}
-            onChange={handleChange}
-            className="bg-slate-200 mx-2 px-2 border border-black rounded"
-          />
-        </div>
-        <button type="submit" className="bg-slate-200 mx-2 px-2 border border-black rounded">
-          Create Course
+        <button type="submit" className="bg-blue-500 text-white p-2 rounded">
+          Add Course
         </button>
       </form>
-      <h2>Delete Course</h2>
-      <input
-        type="text"
-        placeholder="Course ID"
-        className="bg-slate-200 mx-2 px-2 border border-black rounded"
-        onChange={(e) => handleDeleteCourse(e.target.value)}
-      />
+      <CourseList courses={courses} onRemoveCourse={handleRemoveCourse} />
     </div>
   );
 };
