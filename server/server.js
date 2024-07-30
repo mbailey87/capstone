@@ -6,8 +6,6 @@ require("dotenv").config();
 const bcrypt = require('bcrypt');
 const cors = require("cors");
 const db = require("./config/database");
-const saltRounds = 10;
-
 
 const saltRounds = 10;
 const PORT = process.env.PORT || 3001;
@@ -19,7 +17,12 @@ app.use(cors({ origin: process.env.CLIENT_URL }));
 // Serve the React app files
 app.use(express.static(path.resolve(__dirname, "../client/dist")));
 
-// Public routes
+// Handle GET requests to /api route
+app.get("/api", (req, res) => {
+  res.json({ message: "Hello from server!" });
+});
+
+// Create new user in the database
 app.post("/createUser", async (req, res) => {
   if (!req.body || Object.keys(req.body).length === 0) {
     return res.status(400).json({ errorMessage: "No user info to process" });
@@ -95,12 +98,15 @@ const loginHandler = async (req, res, role) => {
   }
 };
 
-// Public login routes
+// Validate student login credentials and get token
 app.post("/studentLogin", (req, res) => loginHandler(req, res, "student"));
+
+// Validate admin login credentials and get token
 app.post("/adminLogin", (req, res) => loginHandler(req, res, "admin"));
 
-// JWT middleware
+// All paths require token to access
 app.use(
+  "/",
   expressjwt({ secret: process.env.SECRET, algorithms: ["HS256"] }).unless({ path: ["/studentLogin", "/adminLogin", "/createUser"] })
 );
 
@@ -123,9 +129,18 @@ app.get("/adminDashboard", (req, res) => {
   let payload = req.auth;
   payload.students = [{ id: 1, first_name: "John", last_name: "Doe" }, { id: 2, first_name: "Jane", last_name: "Smith" }];
   console.log(payload);
-  res.json(payload); 
+  res.json(payload); // Send user info from JWT payload
 });
 
+// Handle GET requests to /studentDashboard route
+app.get("/studentDashboard", (req, res) => {
+  res.json(req.auth); // Send user info from JWT payload
+});
+
+// Handle GET requests to /profile route
+app.get("/profile", (req, res) => {
+  res.json(req.auth); // Send user info from JWT payload
+});
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);

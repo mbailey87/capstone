@@ -11,9 +11,9 @@ import RegistrationPage from './pages/RegistrationPage';
 import HomePage from './pages/HomePage';
 import StudentDashboardPage from './pages/StudentDashboardPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
+import ProfilePage from './pages/ProfilePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import CoursesPage from './pages/CoursesPage';
-import ProfilePage from './pages/ProfilePage';
 import ManageCoursesPage from './pages/ManageCoursesPage';
 
 function App() {
@@ -26,22 +26,18 @@ function App() {
       const payload = JSON.parse(atob(token.split('.')[1]));
       setIsLoggedIn(true);
       setIsAdmin(payload.admin);
-    } else {
-      setIsLoggedIn(false);
-      setIsAdmin(false);
     }
   }, []);
 
-  const handleLogin = (token) => {
-    const payload = JSON.parse(atob(token.split('.')[1]));
+  const handleLogin = (admin) => {
     setIsLoggedIn(true);
-    setIsAdmin(payload.admin);
+    setIsAdmin(admin);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
     setIsLoggedIn(false);
     setIsAdmin(false);
+    localStorage.removeItem('token');
   };
 
   return (
@@ -52,7 +48,6 @@ function App() {
           <Route path="/admin-login" element={<AdminLoginPage onLogin={handleLogin} />} />
           <Route path="/student-login" element={<StudentLoginPage onLogin={handleLogin} />} />
           <Route path="/registration" element={<RegistrationPage />} />
-          <Route path="/create-user" element={<RegistrationPage />} /> {/* New route for create-user */}
           <Route path="/" element={<HomePage />} />
           <Route
             path="/student-dashboard"
@@ -67,12 +62,12 @@ function App() {
             element={<ProtectedRoute element={CoursesPage} />}
           />
           <Route
-            path="/profile"
-            element={<ProtectedRoute element={ProfilePage} />}
-          />
-          <Route
             path="/manage-courses"
             element={<ProtectedRoute element={ManageCoursesPage} />}
+          />
+          <Route
+            path="/profile"
+            element={<ProtectedRoute element={ProfilePage} />}
           />
         </Routes>
         <div className='mt-auto self-center'>

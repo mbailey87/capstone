@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const AdminLoginPage = () => {
+const AdminLoginPage = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
@@ -25,6 +25,7 @@ const AdminLoginPage = () => {
 
       const data = await response.json();
       localStorage.setItem('token', data.token);
+      onLogin(true); // Notify App component about successful login
       navigate('/admin-dashboard');
     } catch (err) {
       setError(err.message);

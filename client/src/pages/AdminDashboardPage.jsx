@@ -55,7 +55,6 @@ const AdminDashboardPage = () => {
     <>
       <div>
         <h1>Admin Dashboard</h1>
-        <Link to="/create-user" className="hover:text-purple">Register New Student</Link>
         <Link to="/manage-courses" className="hover:text-purple ml-4">Manage Courses</Link>
       </div>
       <div>

@@ -23,12 +23,15 @@ const LoggedInNavbar = ({ isAdmin, onLogout }) => {
           {isAdmin ? (
             <>
               <Link to="/admin-dashboard" className="hover:text-purple">Admin Dashboard</Link>
-              <Link to="/create-user" className="hover:text-purple">Register New User</Link>
+              <Link to="/create-user" className="hover:text-purple">Register New Student</Link>
+              <Link to="/profile" className="hover:text-purple">Profile</Link> {/* Profile link for Admin */}
             </>
           ) : (
-            <Link to="/student-dashboard" className="hover:text-purple">Student Dashboard</Link>
+            <>
+              <Link to="/student-dashboard" className="hover:text-purple">Student Dashboard</Link>
+              <Link to="/profile" className="hover:text-purple">Profile</Link> {/* Profile link for Student */}
+            </>
           )}
-          <Link to="/profile" className="hover:text-purple">Profile</Link>
           <button onClick={handleLogout} className="hover:text-purple">Logout</button>
         </div>
       </div>
