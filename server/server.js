@@ -6,6 +6,8 @@ require("dotenv").config();
 const bcrypt = require('bcrypt');
 const cors = require("cors");
 const db = require("./config/database");
+const saltRounds = 10;
+
 
 const saltRounds = 10;
 const PORT = process.env.PORT || 3001;
