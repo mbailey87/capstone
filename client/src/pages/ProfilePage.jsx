@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 
 const ProfilePage = () => {
-  const [data, setData] = useState(null);
+  const [profileData, setProfileData] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchProfileData = async () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) {
           throw new Error('No authorization token found');
         }
 
-        const response = await fetch('http://localhost:3001/studentDashboard', {
+        const response = await fetch('http://localhost:3001/profile', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ const ProfilePage = () => {
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
           const data = await response.json();
-          setData(data);
+          setProfileData(data);
         } else {
           throw new Error('Unexpected content type: ' + contentType);
         }
@@ -37,26 +37,26 @@ const ProfilePage = () => {
       }
     };
 
-    fetchData();
+    fetchProfileData();
   }, []);
 
   if (error) {
     return <div>Error: {error}</div>;
   }
 
-  if (!data) {
+  if (!profileData) {
     return <div>Loading...</div>;
   }
 
   return (
     <div>
-      <h1>Profile</h1>
-      <p>Username: {data.username}</p>
-      <p>First Name: {data.first_name}</p>
-      <p>Last Name: {data.last_name}</p>
-      <p>Email: {data.email}</p>
-      <p>Telephone: {data.telephone}</p>
-      <p>Address: {data.address}</p>
+      <h1>Profile Page</h1>
+      <p>Username: {profileData.username}</p>
+      <p>First Name: {profileData.first_name}</p>
+      <p>Last Name: {profileData.last_name}</p>
+      <p>Email: {profileData.email}</p>
+      <p>Telephone: {profileData.telephone}</p>
+      <p>Address: {profileData.address}</p>
     </div>
   );
 };

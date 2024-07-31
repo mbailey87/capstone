@@ -27,9 +27,11 @@ const LoggedInNavbar = ({ isAdmin, onLogout }) => {
               <Link to="/admin/manage-courses" className="hover:text-purple">Manage Courses</Link>
             </>
           ) : (
-            <Link to="/student-dashboard" className="hover:text-purple">Student Dashboard</Link>
+            <>
+              <Link to="/student-dashboard" className="hover:text-purple">Student Dashboard</Link>
+              <Link to="/profile" className="hover:text-purple">Profile</Link> {/* Profile link for Student */}
+            </>
           )}
-          <Link to="/profile" className="hover:text-purple">Profile</Link>
           <button onClick={handleLogout} className="hover:text-purple">Logout</button>
         </div>
       </div>

@@ -10,6 +10,7 @@ import StudentLoginPage from './pages/StudentLoginPage';
 import HomePage from './pages/HomePage';
 import StudentDashboardPage from './pages/StudentDashboardPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
+import ProfilePage from './pages/ProfilePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import CoursesPage from './pages/CoursesPage';
 import ManageCoursesPage from './pages/ManageCoursesPage';
@@ -26,9 +27,6 @@ function App() {
       const payload = JSON.parse(atob(token.split('.')[1]));
       setIsLoggedIn(true);
       setIsAdmin(payload.admin);
-    } else {
-      setIsLoggedIn(false);
-      setIsAdmin(false);
     }
   }, []);
 
