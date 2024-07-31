@@ -47,13 +47,28 @@ exports.getCourses = (req, res) => {
 };
 
 // Query database to find and display all students
-exports.getStudents = (req, res) => {
-    pool.query('SELECT student_id, first_name, last_name, email, telephone, address FROM students', (err, result) => {
-        if (err) {
-            console.error('Database query error: ', err);
-            return res.status(500).json({ errorMessage: 'Database query error' });
-        }
-        res.json({ message: result.rows });
-    });
+exports.getStudents = async () => {
+    try {
+        const result = await pool.query('SELECT student_id, first_name, last_name, email, telephone, address FROM students');
+        return result.rows;
+    } catch (err) {
+        console.error('Database query error: ', err);
+        throw err;
+    };
 };
    
+// Query database to add student to course
+exports.addStudentCourse = (req, res) => {
+	pool.query(`
+    	INSERT INTO student_courses
+        	(student_id, course_id)
+    	VALUES
+        	('${req.student_id}', '${req.course_id}')
+    	`, (err, result) => {
+            	if (err) {
+                	console.error('Database insert error: ', err);
+                	return res.status(500).json({ errorMessage: 'Database insert error' });
+            	}
+            	res.json({ message: `Successfully added student to course` });
+	});
+};

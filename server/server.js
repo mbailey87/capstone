@@ -128,11 +128,15 @@ function checkAdmin(req, res, next) {
 app.use("/adminDashboard", checkAdmin);
 
 // Handle GET requests to /adminDashboard route
-app.get("/adminDashboard", (req, res) => {
-  let payload = req.auth;
-  payload.students = [{ id: 1, first_name: "John", last_name: "Doe" }, { id: 2, first_name: "Jane", last_name: "Smith" }];
-  console.log(payload);
-  res.json(payload); // Send user info from JWT payload
+app.get("/adminDashboard", async (req, res) => {
+  try {
+    const students = await db.getStudents();
+    const payload = { ...req.auth, students: students };
+    res.json(payload); // Send user info from JWT payload
+  } catch (err) {
+    console.error("Error fetching students: ", err);
+    res.status(500).json({ errorMessage: "Internal Server Error" });
+  };
 });
 
 // Handle GET requests to /studentDashboard route

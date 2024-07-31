@@ -72,8 +72,8 @@ const AdminDashboardPage = () => {
           </thead>
           <tbody>
             {studentData.map(student => (
-              <tr key={student.id}>
-                <td>{student.id}</td>
+              <tr key={student.student_id}>
+                <td>{student.student_id}</td>
                 <td>{student.first_name}</td>
                 <td>{student.last_name}</td>
                 <td>{student.email}</td>
