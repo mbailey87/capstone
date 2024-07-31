@@ -10,8 +10,9 @@ const StudentLoginPage = ({ onLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3001/studentLogin', {
-        method: 'POST',
+      // Send POST request to server with login credentials
+      const response = await fetch("/studentLogin", {
+        method: "POST",
         headers: {
           'Content-Type': 'application/json'
         },
