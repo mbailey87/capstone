@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 
 app.use(express.json());
-app.use(cors({ origin: process.env.CLIENT_URL }));
+app.use(cors());
 
 // Serve the React app files
 app.use(express.static(path.resolve(__dirname, "../client/dist")));
