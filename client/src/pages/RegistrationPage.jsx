@@ -9,10 +9,11 @@ const RegistrationPage = () => {
     email: '',
     telephone: '',
     address: '',
-    password: ''
+    password: '',
+    role: 'student' // Default role
   });
 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,11 +40,12 @@ const RegistrationPage = () => {
       } else if (contentType && contentType.includes('application/json')) {
         const data = await response.json();
         alert(`Welcome ${formData.username}!`);
-        navigate('/student-login'); // Redirect to Student Login after successful registration
+        navigate('/admin-dashboard'); // Redirect to admin dashboard
       } else {
         throw new Error('Unexpected content type: ' + contentType);
       }
     } catch (err) {
+      console.error("Fetch error: ", err);
       alert(err.message);
     }
   };
@@ -53,17 +55,35 @@ const RegistrationPage = () => {
       <h1>Register</h1>
       <form onSubmit={handleSubmit}>
         {Object.keys(formData).map((field) => (
-          <div key={field} className="my-4">
-            <input
-              type={field === 'password' ? 'password' : 'text'}
-              name={field}
-              placeholder={field.replace('_', ' ').toUpperCase()}
-              value={formData[field]}
-              onChange={handleChange}
-              className="bg-slate-200 mx-2 px-2 border border-black rounded"
-            />
-          </div>
+          field !== 'password' && field !== 'role' ? (
+            <div key={field} className="my-4">
+              <input
+                type={field === 'password' ? 'password' : 'text'}
+                name={field}
+                placeholder={field.replace('_', ' ').toUpperCase()}
+                value={formData[field]}
+                onChange={handleChange}
+                className="bg-slate-200 mx-2 px-2 border border-black rounded"
+              />
+            </div>
+          ) : null
         ))}
+        <div className="my-4">
+          <input
+            type="password"
+            name="password"
+            placeholder="PASSWORD"
+            value={formData.password}
+            onChange={handleChange}
+            className="bg-slate-200 mx-2 px-2 border border-black rounded"
+          />
+        </div>
+        <div className="my-4">
+            <select name="role" value={formData.role} onChange={handleChange} className="bg-slate-200 mx-2 px-2 border border-black rounded">
+              <option value="student">Student</option>
+              <option value="admin">Admin</option>
+            </select>
+        </div>
         <button type="submit" className="bg-slate-200 mx-2 px-2 border border-black rounded">
           Register
         </button>

@@ -7,7 +7,7 @@ const LoggedInNavbar = ({ isAdmin, onLogout }) => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    onLogout(); // Call the logout handler passed from the parent
+    onLogout();
     navigate('/');
   };
 
@@ -23,7 +23,8 @@ const LoggedInNavbar = ({ isAdmin, onLogout }) => {
           {isAdmin ? (
             <>
               <Link to="/admin-dashboard" className="hover:text-purple">Admin Dashboard</Link>
-              <Link to="/create-user" className="hover:text-purple">Register New Student</Link>
+              <Link to="/admin/registration" className="hover:text-purple">Register New User</Link>
+              <Link to="/admin/manage-courses" className="hover:text-purple">Manage Courses</Link>
             </>
           ) : (
             <Link to="/student-dashboard" className="hover:text-purple">Student Dashboard</Link>

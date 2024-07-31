@@ -7,14 +7,14 @@ import LoggedInNavbar from './components/LoggedInNavbar';
 import Footer from './components/Footer';
 import AdminLoginPage from './pages/AdminLoginPage';
 import StudentLoginPage from './pages/StudentLoginPage';
-import RegistrationPage from './pages/RegistrationPage';
 import HomePage from './pages/HomePage';
 import StudentDashboardPage from './pages/StudentDashboardPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import CoursesPage from './pages/CoursesPage';
-import ProfilePage from './pages/ProfilePage';
 import ManageCoursesPage from './pages/ManageCoursesPage';
+import ProfilePage from './pages/ProfilePage';
+import RegistrationPage from './pages/RegistrationPage';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -32,16 +32,18 @@ function App() {
     }
   }, []);
 
-  const handleLogin = (token) => {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    setIsLoggedIn(true);
-    setIsAdmin(payload.admin);
-  };
-
   const handleLogout = () => {
-    localStorage.removeItem('token');
     setIsLoggedIn(false);
     setIsAdmin(false);
+  };
+
+  const handleLogin = () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      setIsLoggedIn(true);
+      setIsAdmin(payload.admin);
+    }
   };
 
   return (
@@ -51,29 +53,13 @@ function App() {
         <Routes>
           <Route path="/admin-login" element={<AdminLoginPage onLogin={handleLogin} />} />
           <Route path="/student-login" element={<StudentLoginPage onLogin={handleLogin} />} />
-          <Route path="/registration" element={<RegistrationPage />} />
-          <Route path="/create-user" element={<RegistrationPage />} /> {/* New route for create-user */}
           <Route path="/" element={<HomePage />} />
-          <Route
-            path="/student-dashboard"
-            element={<ProtectedRoute element={StudentDashboardPage} />}
-          />
-          <Route
-            path="/admin-dashboard"
-            element={<ProtectedRoute element={AdminDashboardPage} />}
-          />
-          <Route
-            path="/courses"
-            element={<ProtectedRoute element={CoursesPage} />}
-          />
-          <Route
-            path="/profile"
-            element={<ProtectedRoute element={ProfilePage} />}
-          />
-          <Route
-            path="/manage-courses"
-            element={<ProtectedRoute element={ManageCoursesPage} />}
-          />
+          <Route path="/student-dashboard" element={<ProtectedRoute element={StudentDashboardPage} />} />
+          <Route path="/admin-dashboard" element={<ProtectedRoute element={AdminDashboardPage} isAdmin={isAdmin} />} />
+          <Route path="/admin/manage-courses" element={<ProtectedRoute element={ManageCoursesPage} isAdmin={isAdmin} />} />
+          <Route path="/admin/registration" element={<ProtectedRoute element={RegistrationPage} isAdmin={isAdmin} />} />
+          <Route path="/courses" element={<ProtectedRoute element={CoursesPage} />} />
+          <Route path="/profile" element={<ProtectedRoute element={ProfilePage} />} />
         </Routes>
         <div className='mt-auto self-center'>
           <div className="card mt-auto">

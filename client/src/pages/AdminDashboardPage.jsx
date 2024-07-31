@@ -52,12 +52,9 @@ const AdminDashboardPage = () => {
   }
 
   return (
-    <>
-      <div>
-        <h1>Admin Dashboard</h1>
-        <Link to="/create-user" className="hover:text-purple">Register New Student</Link>
-        <Link to="/manage-courses" className="hover:text-purple ml-4">Manage Courses</Link>
-      </div>
+    <div>
+      <h1>Admin Dashboard</h1>
+
       <div>
         <h2>Students</h2>
         <table>
@@ -85,7 +82,7 @@ const AdminDashboardPage = () => {
           </tbody>
         </table>
       </div>
-    </>
+    </div>
   );
 };
 

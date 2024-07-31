@@ -20,10 +20,11 @@ exports.getUser = async (username, role) => {
 
 // Query database to insert new user info
 exports.createUser = (req, res, userInfo) => {
+    const table = userInfo.role === 'admin' ? 'admins' : 'students';
     pool.query(`
-        INSERT INTO students 
-            (username, first_name, last_name, email, telephone, address, password_hash) 
-        VALUES 
+        INSERT INTO ${table}
+            (username, first_name, last_name, email, telephone, address, password_hash)
+        VALUES
             ('${userInfo.username}', '${userInfo.first_name}', '${userInfo.last_name}', '${userInfo.email}',
                 '${userInfo.telephone}', '${userInfo.address}', '${userInfo.password_hash}')
         `, (err, result) => {
@@ -56,4 +57,3 @@ exports.getStudents = (req, res) => {
         res.json({ message: result.rows });
     });
 };
-   
