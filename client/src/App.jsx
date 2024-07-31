@@ -14,7 +14,6 @@ import ProfilePage from './pages/ProfilePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import CoursesPage from './pages/CoursesPage';
 import ManageCoursesPage from './pages/ManageCoursesPage';
-import ProfilePage from './pages/ProfilePage';
 import RegistrationPage from './pages/RegistrationPage';
 
 function App() {
@@ -33,6 +32,7 @@ function App() {
   const handleLogout = () => {
     setIsLoggedIn(false);
     setIsAdmin(false);
+    localStorage.removeItem('token');
   };
 
   const handleLogin = () => {

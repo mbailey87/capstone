@@ -13,6 +13,8 @@ const ManageCoursesPage = () => {
     tuition_cost: ''
   });
   const [searchTerm, setSearchTerm] = useState('');
+  const [expandedCourse, setExpandedCourse] = useState(null);
+  const [students, setStudents] = useState([]);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -70,6 +72,31 @@ const ManageCoursesPage = () => {
   const handleRemoveCourse = (string_id) => {
     const newCourses = courses.filter(course => course.string_id !== string_id);
     setCourses(newCourses);
+  };
+
+  const handleToggle = async (courseId) => {
+    if (expandedCourse === courseId) {
+      setExpandedCourse(null);
+      setStudents([]);
+    } else {
+      setExpandedCourse(courseId);
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`http://localhost:3001/courses/${courseId}/students`, {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          },
+        });
+        if (response.ok) {
+          const students = await response.json();
+          setStudents(students);
+        } else {
+          console.error("Failed to fetch students for course");
+        }
+      } catch (err) {
+        console.error("Error fetching students for course:", err);
+      }
+    }
   };
 
   const filteredCourses = courses.filter(course => 
@@ -130,16 +157,47 @@ const ManageCoursesPage = () => {
         </thead>
         <tbody>
           {filteredCourses.map((course, index) => (
-            <tr key={index}>
-              {Object.keys(courseData).map((field) => (
-                <td key={field} className="py-2 px-4 border-b border-gray-200">{course[field]}</td>
-              ))}
-              <td className="py-2 px-4 border-b border-gray-200">
-                <button onClick={() => handleRemoveCourse(course.string_id)} className="bg-red-500 text-white p-2 rounded">
-                  Remove
-                </button>
-              </td>
-            </tr>
+            <React.Fragment key={index}>
+              <tr onClick={() => handleToggle(course.string_id)}>
+                {Object.keys(courseData).map((field) => (
+                  <td key={field} className="py-2 px-4 border-b border-gray-200">{course[field]}</td>
+                ))}
+                <td className="py-2 px-4 border-b border-gray-200">
+                  <button onClick={() => handleRemoveCourse(course.string_id)} className="bg-red-500 text-white p-2 rounded">
+                    Remove
+                  </button>
+                </td>
+              </tr>
+              {expandedCourse === course.string_id && (
+                <tr>
+                  <td colSpan={Object.keys(courseData).length + 1}>
+                    <div className="p-4 bg-gray-100">
+                      <h2 className="text-xl font-bold mb-2">Enrolled Students</h2>
+                      <table className="min-w-full bg-white">
+                        <thead>
+                          <tr>
+                            <th className="py-2 px-4 border-b border-gray-200">Student ID</th>
+                            <th className="py-2 px-4 border-b border-gray-200">First Name</th>
+                            <th className="py-2 px-4 border-b border-gray-200">Last Name</th>
+                            <th className="py-2 px-4 border-b border-gray-200">Email</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {students.map(student => (
+                            <tr key={student.student_id}>
+                              <td className="py-2 px-4 border-b border-gray-200 text-center">{student.student_id}</td>
+                              <td className="py-2 px-4 border-b border-gray-200 text-center">{student.first_name}</td>
+                              <td className="py-2 px-4 border-b border-gray-200 text-center">{student.last_name}</td>
+                              <td className="py-2 px-4 border-b border-gray-200 text-center">{student.email}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </React.Fragment>
           ))}
         </tbody>
       </table>

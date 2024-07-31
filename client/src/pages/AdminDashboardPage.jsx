@@ -1,87 +1,109 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 
 const AdminDashboardPage = () => {
-  const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
-  const [studentData, setStudentData] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          throw new Error('No authorization token found');
-        }
+    const fetchStudents = async () => {
+      const token = localStorage.getItem("token");
 
-        const response = await fetch('http://localhost:3001/adminDashboard', {
-          method: 'GET',
+      if (!token) {
+        setErrorMessage("No token found, please log in");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:3001/adminDashboard", {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
+            "Authorization": `Bearer ${token}`
+          },
         });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const contentType = response.headers.get('content-type');
-        if (contentType && contentType.includes('application/json')) {
-          const data = await response.json();
-          setData(data);
-          setStudentData(data.students || []);
+        if (response.ok) {
+          const result = await response.json();
+          setStudents(result.students);
+        } else if (response.status === 401) {
+          setErrorMessage("Unauthorized, please log in");
         } else {
-          throw new Error('Unexpected content type: ' + contentType);
+          throw new Error("Failed to fetch data");
         }
       } catch (err) {
-        setError(err.message);
-        console.error("Fetch error: ", err);
+        setErrorMessage(err.message);
       }
     };
 
-    fetchData();
+    fetchStudents();
   }, []);
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  const handleRemoveStudent = async (student_id) => {
+    const token = localStorage.getItem("token");
 
-  if (!data) {
-    return <div>Loading...</div>;
-  }
+    if (!token) {
+      setErrorMessage("No token found, please log in");
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:3001/students/${student_id}`, {
+        method: 'DELETE',
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        setStudents(students.filter(student => student.student_id !== student_id));
+      } else {
+        throw new Error("Failed to delete student");
+      }
+    } catch (err) {
+      setErrorMessage(err.message);
+    }
+  };
 
   return (
-    <div>
-      <h1>Admin Dashboard</h1>
-
-      <div>
-        <h2>Students</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Student ID</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Email</th>
-              <th>Telephone</th>
-              <th>Address</th>
-            </tr>
-          </thead>
-          <tbody>
-            {studentData.map(student => (
-              <tr key={student.id}>
-                <td>{student.id}</td>
-                <td>{student.first_name}</td>
-                <td>{student.last_name}</td>
-                <td>{student.email}</td>
-                <td>{student.telephone}</td>
-                <td>{student.address}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <div className="container mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
+      <div className="mb-4">
+        <a href="/admin/registration" className="hover:text-purple mr-4">Register New User</a>
+        <a href="/admin/manage-courses" className="hover:text-purple">Manage Courses</a>
       </div>
+      <h2 className="text-xl font-bold mb-4">All Students</h2>
+      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+      <table className="min-w-full bg-white">
+        <thead>
+          <tr>
+            <th className="py-2 px-4 border-b border-gray-200">Student ID</th>
+            <th className="py-2 px-4 border-b border-gray-200">First Name</th>
+            <th className="py-2 px-4 border-b border-gray-200">Last Name</th>
+            <th className="py-2 px-4 border-b border-gray-200">Email</th>
+            <th className="py-2 px-4 border-b border-gray-200">Telephone</th>
+            <th className="py-2 px-4 border-b border-gray-200">Address</th>
+            <th className="py-2 px-4 border-b border-gray-200">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {students.map((student, index) => (
+            <tr key={index}>
+              <td className="py-2 px-4 border-b border-gray-200">{student.student_id}</td>
+              <td className="py-2 px-4 border-b border-gray-200">{student.first_name}</td>
+              <td className="py-2 px-4 border-b border-gray-200">{student.last_name}</td>
+              <td className="py-2 px-4 border-b border-gray-200">{student.email}</td>
+              <td className="py-2 px-4 border-b border-gray-200">{student.telephone}</td>
+              <td className="py-2 px-4 border-b border-gray-200">{student.address}</td>
+              <td className="py-2 px-4 border-b border-gray-200">
+                <button
+                  onClick={() => handleRemoveStudent(student.student_id)}
+                  className="bg-red-500 text-white p-2 rounded"
+                >
+                  Remove
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

@@ -4,17 +4,17 @@ import logo from '../assets/photos/logo.webp';
 
 const Navbar = () => {
   return (
-    <nav>
+    <nav className="bg-purple-600 p-4 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
-        <div className="font-bold text-xl">
+        <div className="font-bold text-purple text-xl">
           <Link to="/">
-            <img className="w-24" src={logo} alt="" />
+            <img className="w-24" src={logo} alt="Logo" />
           </Link>
         </div>
         <div className="flex space-x-4">
-          <Link to="/" className="hover:text-purple">Home</Link>
-          <Link to="/admin-login" className="hover:text-purple">Admin Login</Link>
-          <Link to="/student-login" className="hover:text-purple">Student Login</Link>
+          <Link to="/" className="text-purple hover:text-gold">Home</Link>
+          <Link to="/admin-login" className="text-purple hover:text-gold">Admin Login</Link>
+          <Link to="/student-login" className="text-purple hover:text-gold">Student Login</Link>
         </div>
       </div>
     </nav>
