@@ -141,14 +141,15 @@ app.delete("/students/:student_id", checkAdmin, db.deleteStudent);
 // Handle GET requests to fetch students for a specific course
 app.get("/courses/:courseId/students", async (req, res) => {
   try {
-    const courseId = req.params.courseId;
-    const students = await db.getStudentsForCourse(courseId);
-    res.json(students);
+      const courseId = req.params.courseId;
+      const students = await db.getStudentsForCourse(courseId);
+      res.json(students);
   } catch (err) {
-    console.error("Error fetching students for course: ", err);
-    res.status(500).json({ errorMessage: "Internal Server Error" });
+      console.error("Error fetching students for course: ", err);
+      res.status(500).json({ errorMessage: "Internal Server Error" });
   }
 });
+
 
 // Handle GET requests to /studentDashboard route
 app.get("/studentDashboard", (req, res) => {

@@ -85,3 +85,21 @@ exports.addStudentCourse = (req, res) => {
             	res.json({ message: `Successfully added student to course` });
 	});
 };
+
+// Query database to find students for a specific course
+exports.getStudentsForCourse = async (courseId) => {
+    try {
+        const result = await pool.query(
+            `SELECT s.student_id, s.first_name, s.last_name, s.email
+             FROM student_courses sc
+             JOIN students s ON sc.student_id = s.student_id
+             WHERE sc.course_id = $1`,
+            [courseId]
+        );
+        console.log(`Students for course ${courseId}:`, result.rows);
+        return result.rows;
+    } catch (err) {
+        console.error('Database query error: ', err);
+        throw err;
+    }
+};

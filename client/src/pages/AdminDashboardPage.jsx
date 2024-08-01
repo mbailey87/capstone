@@ -65,10 +65,6 @@ const AdminDashboardPage = () => {
   return (
     <div className="container mx-auto">
       <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
-      <div className="mb-4">
-        <a href="/admin/registration" className="hover:text-purple mr-4">Register New User</a>
-        <a href="/admin/manage-courses" className="hover:text-purple">Manage Courses</a>
-      </div>
       <h2 className="text-xl font-bold mb-4">All Students</h2>
       {errorMessage && <p className="text-red-500">{errorMessage}</p>}
       <table className="min-w-full bg-white">

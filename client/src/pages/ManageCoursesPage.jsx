@@ -23,7 +23,7 @@ const ManageCoursesPage = () => {
       if (!token) {
         console.error("No token found, please log in");
         return;
-      };
+      }
 
       try {
         const response = await fetch("http://localhost:3001/courses", {
@@ -37,10 +37,10 @@ const ManageCoursesPage = () => {
           setCourses(result.message);
         } else {
           console.error("Failed to fetch courses");
-        };
+        }
       } catch (err) {
         console.error("Error fetching courses:", err);
-      };
+      }
     };
 
     fetchCourses();
@@ -89,6 +89,7 @@ const ManageCoursesPage = () => {
         });
         if (response.ok) {
           const students = await response.json();
+          console.log(`Students for course ${courseId}:`, students);
           setStudents(students);
         } else {
           console.error("Failed to fetch students for course");
