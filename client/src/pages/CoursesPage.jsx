@@ -40,7 +40,7 @@ const CoursesPage = () => {
     return (
         <>
             <h1>Courses</h1>
-            <CourseList data={data} />
+            {data ? <CourseList courses={data} /> : <p>Loading...</p>}
             {errorMessage && <p>{errorMessage}</p>}
         </>
     );

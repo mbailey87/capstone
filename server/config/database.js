@@ -56,6 +56,21 @@ exports.getStudents = async () => {
         throw err;
     };
 };
+
+// Query database to find and display all courses a student is registered in
+exports.getStudentCourses = async (student_id) => {
+    try {
+        const result = await pool.query(`SELECT * FROM student_courses WHERE student_id=${student_id}`);
+        let resArr = [];
+        for (row in result.rows) {
+            resArr.push(result.rows[row].course_id);
+        };
+        return resArr;
+    } catch (err) {
+        console.error('Database query error: ', err);
+        throw err;
+    };
+};
    
 // Query database to add student to course
 exports.addStudentCourse = (req, res) => {
@@ -71,4 +86,34 @@ exports.addStudentCourse = (req, res) => {
             	}
             	res.json({ message: `Successfully added student to course` });
 	});
+};
+
+// Query database to update user profile info
+exports.updateProfile = async (student_id, role, updatedInfo) => {
+    try {
+        let setClauses = [];
+        let values = [];
+
+        // Add updated profile info to setClauses and values arrays
+        Object.keys(updatedInfo).forEach((key, index) => {
+            setClauses.push(`${key} = $${index + 1}`);
+            values.push(updatedInfo[key]);
+        });
+
+        // Add student_id as last parameter
+        values.push(student_id);
+
+        // Build parameterized query
+        const query = `
+            UPDATE ${role}s
+            SET ${setClauses.join(", ")}
+            WHERE student_id = $${values.length}
+        `;
+
+        await pool.query(query, values);
+        return "Successfully updated profile info";
+    } catch (err) {
+        console.error('Database query error: ', err);
+        throw err;
+    };
 };

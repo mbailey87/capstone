@@ -95,11 +95,11 @@ const StudentDashboardPage = () => {
           </thead>
           <tbody>
             {enrolledCourses.map(course => (
-              <tr key={course.id}>
-                <td>{course.id}</td>
-                <td>{course.title}</td>
+              <tr key={course}>
+                <td>{course}</td>
+                {/* <td>{course.title}</td>
                 <td>{course.description}</td>
-                <td>{course.schedule}</td>
+                <td>{course.schedule}</td> */}
                 <td>
                   <button onClick={() => handleRemoveCourse(course.id)} className="hover:text-purple">Remove</button>
                 </td>
