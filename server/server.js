@@ -13,7 +13,6 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
-app.use(cors({ origin: 'http://localhost:5173' }));
 
 // Serve the React app files
 app.use(express.static(path.resolve(__dirname, "../client/dist")));
