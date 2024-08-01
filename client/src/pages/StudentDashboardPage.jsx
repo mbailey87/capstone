@@ -55,11 +55,9 @@ const StudentDashboardPage = () => {
   return (
     <div className="container mx-auto">
       <h1 className="text-2xl font-bold mb-4">Student Dashboard</h1>
-      {courses.length > 0 &&
-        <button onClick={handleNavigate} className="hover:text-purple mb-4 inline-block">
-          See All Courses
-        </button>
-      }
+      <button onClick={handleNavigate} className="hover:text-purple mb-4 inline-block">
+        See All Courses
+      </button>
       <h2 className="text-xl font-bold mb-4">Enrolled Courses</h2>
       {errorMessage && <p className="text-red-500">{errorMessage}</p>}
       <table className="min-w-full bg-white">

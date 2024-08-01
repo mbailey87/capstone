@@ -195,8 +195,8 @@ app.get("/profile", (req, res) => {
 // Handle POST requests to /profile route
 app.post("/profile", async (req, res) => {
   const role = req.auth.admin ? "admin" : "student";
-  const id = `req.auth.${role}_id`;
-  const message = await db.updateProfile(id, role, req.body);
+  const id = `${role}_id`;
+  const message = await db.updateProfile(req.auth[id], role, req.body);
   res.json({ message });
 });
 
