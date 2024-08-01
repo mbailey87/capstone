@@ -34,7 +34,7 @@ const ManageCoursesPage = () => {
 
         if (response.ok) {
           const result = await response.json();
-          setCourses(result.message);
+          setCourses(result);
         } else {
           console.error("Failed to fetch courses");
         };
@@ -204,7 +204,7 @@ const ManageCoursesPage = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredCourses.map((course, index) => (
+          {courses && filteredCourses.map((course, index) => (
             <React.Fragment key={index}>
               <tr onClick={() => handleToggle(course.string_id)}>
                 {Object.keys(courseData).map((field) => (
