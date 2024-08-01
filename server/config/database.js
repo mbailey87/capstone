@@ -51,7 +51,7 @@ exports.deleteStudent = (req, res) => {
 exports.getCourses = async (req, res) => {
     try {
         await pool.query('SELECT * FROM courses');
-        res.json({ message: result.rows });
+        return result.rows;
     } catch (err) {
         console.error('Database query error: ', err);
         return res.status(500).json({ errorMessage: 'Database query error' });

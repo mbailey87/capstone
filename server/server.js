@@ -112,7 +112,10 @@ app.use(
 );
 
 // Handle GET requests to /courses route
-app.get("/courses", db.getCourses);
+app.get("/courses", async (req, res) => {
+  const courses = await db.getCourses();
+  res.json(courses);
+});
 
 // Middleware to check if a user is an admin
 function checkAdmin(req, res, next) {
@@ -136,9 +139,9 @@ app.get("/adminDashboard", async (req, res) => {
     res.status(500).json({ errorMessage: "Internal Server Error" });
   };
 });
+
 // Handle DELETE requests to delete a student in adminDashboard
 app.delete("/students/:student_id", checkAdmin, db.deleteStudent);
-
 
 // Handle GET requests to fetch students for a specific course
 app.get("/courses/:courseId/students", async (req, res) => {
@@ -152,11 +155,10 @@ app.get("/courses/:courseId/students", async (req, res) => {
   }
 });
 
-
 // Handle GET requests to /studentDashboard route
-app.get("/studentDashboard", async (req, res) => {
+app.get("/student/:studentId/courses", async (req, res) => {
   try {
-    const courses = await db.getStudentCourses(req.auth.student_id);
+    const courses = await db.getStudentCourses(req.params.studentId);
     const payload = { ...req.auth, courses: courses };
     res.json(payload); // Send user info from JWT payload
   } catch (err) {
