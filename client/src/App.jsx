@@ -60,14 +60,11 @@ function App() {
           <Route path="/profile" element={<ProtectedRoute element={ProfilePage} />} />
         </Routes>
         <div className='mt-auto self-center'>
-          <div className="card mt-auto">
-            <p>
-              Edit <code>src/App.jsx</code> and save to test HMR
-            </p>
-          </div>
-          <Footer />
+
+        <Footer />
         </div>
       </Router>
+      
     </div>
   );
 }

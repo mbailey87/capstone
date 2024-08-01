@@ -2,113 +2,98 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const StudentDashboardPage = () => {
-  const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
-  const [enrolledCourses, setEnrolledCourses] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          throw new Error('No authorization token found');
-        }
+    const fetchCourses = async () => {
+      const token = localStorage.getItem("token");
 
-        const response = await fetch('/server/studentDashboard', {
-          method: 'GET',
+      if (!token) {
+        setErrorMessage("No token found, please log in");
+        return;
+      }
+
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const student_id = payload.id;
+
+        const response = await fetch(`http://localhost:3001/student/${student_id}/courses`, {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
+            "Authorization": `Bearer ${token}`
+          },
         });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const contentType = response.headers.get('content-type');
-        if (contentType && contentType.includes('application/json')) {
-          const data = await response.json();
-          setData(data);
-          setEnrolledCourses(data.courses || []);
+        if (response.ok) {
+          const result = await response.json();
+          setCourses(result.message);
         } else {
-          throw new Error('Unexpected content type: ' + contentType);
+          throw new Error("Failed to fetch courses");
         }
       } catch (err) {
-        setError(err.message);
-        console.error("Fetch error: ", err);
+        setErrorMessage(err.message);
       }
     };
 
-    fetchData();
+    fetchCourses();
   }, []);
 
-  const handleRemoveCourse = async (courseId) => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3001/removeCourse/${courseId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const updatedCourses = enrolledCourses.filter(course => course.id !== courseId);
-      setEnrolledCourses(updatedCourses);
-      alert(`Course ${courseId} removed successfully!`);
-    } catch (err) {
-      console.error("Fetch error: ", err);
-      alert(err.message);
-    }
+  const handleRemoveCourse = (courseId) => {
+    setCourses(courses.filter(course => course.string_id !== courseId));
+    // Add backend call to remove course for the student
   };
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  if (!data) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <>
-      <div>
-        <h1>Student Dashboard</h1>
-        <Link to="/courses" className="hover:text-purple">Lookup Courses</Link>
+    <div className="container mx-auto">
+      <h1 className="text-3xl font-bold mb-6 text-center">Student Dashboard</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold">Enrolled Courses</h2>
+        <Link to="/courses" className="bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700">
+          Lookup Courses
+        </Link>
       </div>
-      <div>
-        <h2>Enrolled Courses</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Course ID</th>
-              <th>Title</th>
-              <th>Description</th>
-              <th>Schedule</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {enrolledCourses.map(course => (
-              <tr key={course.id}>
-                <td>{course.id}</td>
-                <td>{course.title}</td>
-                <td>{course.description}</td>
-                <td>{course.schedule}</td>
-                <td>
-                  <button onClick={() => handleRemoveCourse(course.id)} className="hover:text-purple">Remove</button>
+      {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
+      <table className="min-w-full bg-white shadow-md rounded mb-4">
+        <thead>
+          <tr>
+            <th className="py-2 px-4 border-b border-gray-200">String ID</th>
+            <th className="py-2 px-4 border-b border-gray-200">Title</th>
+            <th className="py-2 px-4 border-b border-gray-200">Description</th>
+            <th className="py-2 px-4 border-b border-gray-200">Schedule</th>
+            <th className="py-2 px-4 border-b border-gray-200">Classroom Number</th>
+            <th className="py-2 px-4 border-b border-gray-200">Maximum Capacity</th>
+            <th className="py-2 px-4 border-b border-gray-200">Credit Hours</th>
+            <th className="py-2 px-4 border-b border-gray-200">Tuition Cost</th>
+            <th className="py-2 px-4 border-b border-gray-200">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {courses.length > 0 ? (
+            courses.map((course, index) => (
+              <tr key={index} className="hover:bg-gray-100">
+                <td className="py-2 px-4 border-b border-gray-200">{course.string_id}</td>
+                <td className="py-2 px-4 border-b border-gray-200">{course.title}</td>
+                <td className="py-2 px-4 border-b border-gray-200">{course.description}</td>
+                <td className="py-2 px-4 border-b border-gray-200">{course.schedule}</td>
+                <td className="py-2 px-4 border-b border-gray-200">{course.classroom_number}</td>
+                <td className="py-2 px-4 border-b border-gray-200">{course.maximum_capacity}</td>
+                <td className="py-2 px-4 border-b border-gray-200">{course.credit_hours}</td>
+                <td className="py-2 px-4 border-b border-gray-200">{course.tuition_cost}</td>
+                <td className="py-2 px-4 border-b border-gray-200">
+                  <button onClick={() => handleRemoveCourse(course.string_id)} className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-700">
+                    Remove
+                  </button>
                 </td>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="9" className="py-4 text-center text-gray-500">No courses enrolled.</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
   );
 };
 
