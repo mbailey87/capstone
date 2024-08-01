@@ -69,8 +69,9 @@ const loginHandler = async (req, res, role) => {
     bcrypt.compare(req.body.password, user[0].password_hash, (err, result) => {
       if (err) throw err;
       if (result) {
+        const id = `${role}_id`;
         const tokenPayload = {
-          student_id: user[0].student_id,
+          [id]: user[0][id],
           username: user[0].username,
           first_name: user[0].first_name,
           last_name: user[0].last_name,
