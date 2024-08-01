@@ -50,15 +50,15 @@ Content-Type: application/json
 
 
 ### Get courses
-GET http://localhost:3001/home/courses
+GET http://localhost:3001/courses
 Authorization: Bearer 
 
 
 ### Get student home page
-GET http://localhost:3001/home/student
+GET http://localhost:3001/studentDashboard
 Authorization: Bearer 
 
 
-### Get students
-GET http://localhost:3001/home/admin/getStudents
+### Get admin home page
+GET http://localhost:3001/adminDashboard
 Authorization: Bearer 

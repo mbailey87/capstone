@@ -14,8 +14,10 @@ const AdminDashboardPage = () => {
       }
 
       try {
-        const response = await fetch("http://localhost:3001/adminDashboard", {
+        const response = await fetch('/adminDashboard', {
+          method: 'GET',
           headers: {
+            'Content-Type': 'application/json',
             "Authorization": `Bearer ${token}`
           },
         });
@@ -45,7 +47,7 @@ const AdminDashboardPage = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:3001/students/${student_id}`, {
+      const response = await fetch(`students/${student_id}`, {
         method: 'DELETE',
         headers: {
           "Authorization": `Bearer ${token}`

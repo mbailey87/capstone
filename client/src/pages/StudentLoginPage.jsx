@@ -4,50 +4,14 @@ import { Link } from 'react-router-dom';
 const StudentDashboardPage = () => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
-  const [enrolledCourses, setEnrolledCourses] = useState([]);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          throw new Error('No authorization token found');
-        }
-
-        const response = await fetch('/server/studentDashboard', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const contentType = response.headers.get('content-type');
-        if (contentType && contentType.includes('application/json')) {
-          const data = await response.json();
-          setData(data);
-          setEnrolledCourses(data.courses || []);
-        } else {
-          throw new Error('Unexpected content type: ' + contentType);
-        }
-      } catch (err) {
-        setError(err.message);
-        console.error("Fetch error: ", err);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const handleRemoveCourse = async (courseId) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3001/removeCourse/${courseId}`, {
-        method: 'DELETE',
+      // Send POST request to server with login credentials
+      const response = await fetch("/studentLogin", {
+        method: "POST",
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`

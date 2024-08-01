@@ -12,6 +12,7 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 app.use(cors({ origin: 'http://localhost:5173' }));
 
 // Serve the React app files
@@ -70,6 +71,7 @@ const loginHandler = async (req, res, role) => {
       if (err) throw err;
       if (result) {
         const tokenPayload = {
+          student_id: user[0].student_id,
           username: user[0].username,
           first_name: user[0].first_name,
           last_name: user[0].last_name,
@@ -152,13 +154,27 @@ app.get("/courses/:courseId/students", async (req, res) => {
 
 
 // Handle GET requests to /studentDashboard route
-app.get("/studentDashboard", (req, res) => {
-  res.json(req.auth); // Send user info from JWT payload
+app.get("/studentDashboard", async (req, res) => {
+  try {
+    const courses = await db.getStudentCourses(req.auth.student_id);
+    const payload = { ...req.auth, courses: courses };
+    res.json(payload); // Send user info from JWT payload
+  } catch (err) {
+    console.error("Error fetching courses: ", err);
+    res.status(500).json({ errorMessage: "Internal Server Error" });
+  };
 });
 
 // Handle GET requests to /profile route
 app.get("/profile", (req, res) => {
   res.json(req.auth); // Send user info from JWT payload
+});
+
+// Handle POST requests to /profile route
+app.post("/profile", async (req, res) => {
+  const role = req.auth.admin ? "admin" : "student";
+  const message = await db.updateProfile(req.auth.student_id, role, req.body);
+  res.json({ message });
 });
 
 app.listen(PORT, () => {

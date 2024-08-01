@@ -10,7 +10,8 @@ const AdminLoginPage = ({ onLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3001/adminLogin', {
+      // Send a POST request to the server with the login credentials
+      const response = await fetch('/adminLogin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
