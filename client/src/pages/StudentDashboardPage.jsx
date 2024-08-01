@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import graduationImg from '../assets/photos/graduation.webp';
+import studentDeskImg from '../assets/photos/student_at_desk.webp';
+import studentsTableImg from '../assets/photos/students_at_table.webp';
+import studentsHallImg from '../assets/photos/students_in_hall.webp';
 
 const StudentDashboardPage = () => {
   const [courses, setCourses] = useState([]);
@@ -72,6 +76,12 @@ const StudentDashboardPage = () => {
           ))}
         </tbody>
       </table>
+      <div className="flex justify-center mt-8">
+        <img src={graduationImg} alt="Graduation" className="w-1/4 mx-2" />
+        <img src={studentDeskImg} alt="Student at Desk" className="w-1/4 mx-2" />
+        <img src={studentsTableImg} alt="Students at Table" className="w-1/4 mx-2" />
+        <img src={studentsHallImg} alt="Students in Hall" className="w-1/4 mx-2" />
+      </div>
     </div>
   );
 };
