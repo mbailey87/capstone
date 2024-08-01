@@ -114,6 +114,13 @@ app.use(
 // Handle GET requests to /courses route
 app.get("/courses", db.getCourses);
 
+// Handle POST requests to /courses route to add a new course
+app.post("/courses", db.addCourse);
+
+// Handle DELETE requests to remove a course
+app.delete("/courses/:string_id", checkAdmin, db.deleteCourse);
+
+
 // Middleware to check if a user is an admin
 function checkAdmin(req, res, next) {
   if (!req.auth.admin) {

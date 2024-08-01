@@ -11,7 +11,7 @@ const AdminLoginPage = ({ onLogin }) => {
     e.preventDefault();
     try {
       // Send a POST request to the server with the login credentials
-      const response = await fetch('/adminLogin', {
+      const response = await fetch('http://localhost:3001/adminLogin', { // Ensure the full URL is specified
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

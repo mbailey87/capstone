@@ -22,7 +22,7 @@ const StudentDashboardPage = () => {
         const payload = JSON.parse(atob(token.split('.')[1]));
         const student_id = payload.id;
 
-        const response = await fetch('student/${student_id}/courses', {
+        const response = await fetch('http://localhost:3001/student/${student_id}/courses', {
           method: 'GET',
           headers: {
             "Authorization": `Bearer ${token}`

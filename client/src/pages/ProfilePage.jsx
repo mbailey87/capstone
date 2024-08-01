@@ -83,7 +83,7 @@ const ProfilePage = () => {
           throw new Error('No authorization token found');
         }
 
-        const response = await fetch('/profile', {
+        const response = await fetch('http://localhost:3001/profile', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

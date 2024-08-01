@@ -1,17 +1,54 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const StudentDashboardPage = () => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [enrolledCourses, setEnrolledCourses] = useState([]); // Assuming you have a state for enrolled courses
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    const fetchCourses = async () => {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        setError("No token found, please log in");
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://localhost:3001/studentDashboard`, {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          },
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          setEnrolledCourses(result.courses);
+          setData(result);
+        } else {
+          throw new Error("Failed to fetch data");
+        }
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
+    fetchCourses();
+  }, []);
+
+  const handleRemoveCourse = async (courseId) => {
     try {
-      // Send POST request to server with login credentials
-      const response = await fetch("/studentLogin", {
-        method: "POST",
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        setError("No token found, please log in");
+        return;
+      }
+
+      const response = await fetch(`/student/courses/${courseId}`, {
+        method: "DELETE",
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`

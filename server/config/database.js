@@ -50,7 +50,7 @@ exports.deleteStudent = (req, res) => {
 // Query database to find and display all courses
 exports.getCourses = async (req, res) => {
     try {
-        await pool.query('SELECT * FROM courses');
+        const result = await pool.query('SELECT * FROM courses');
         res.json({ message: result.rows });
     } catch (err) {
         console.error('Database query error: ', err);
@@ -68,6 +68,36 @@ exports.getStudents = async () => {
         throw err;
     };
 };
+
+// Query database to add a new course
+exports.addCourse = async (req, res) => {
+    const { string_id, title, description, schedule, classroom_number, maximum_capacity, credit_hours, tuition_cost } = req.body;
+    try {
+        await pool.query(`
+            INSERT INTO courses 
+                (string_id, title, description, schedule, classroom_number, maximum_capacity, credit_hours, tuition_cost)
+            VALUES
+                ($1, $2, $3, $4, $5, $6, $7, $8)
+        `, [string_id, title, description, schedule, classroom_number, maximum_capacity, credit_hours, tuition_cost]);
+        res.json({ message: `Successfully added new course ${title}` });
+    } catch (err) {
+        console.error('Database insert error: ', err);
+        return res.status(500).json({ errorMessage: 'Database insert error' });
+    };
+};
+
+// Query database to delete a course
+exports.deleteCourse = (req, res) => {
+    const { string_id } = req.params;
+    pool.query('DELETE FROM courses WHERE string_id = $1', [string_id], (err, result) => {
+        if (err) {
+            console.error('Database delete error: ', err);
+            return res.status(500).json({ errorMessage: 'Database delete error' });
+        }
+        res.json({ message: `Successfully deleted course with ID ${string_id}` });
+    });
+};
+
 
 // Query database to find and display all courses a student is registered in
 exports.getStudentCourses = async (student_id) => {
