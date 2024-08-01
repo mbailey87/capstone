@@ -116,6 +116,26 @@ app.get("/courses", async (req, res) => {
   res.json(courses);
 });
 
+app.post("/courses", async (req, res) => {
+  try {
+    const message = await db.addStudentCourse(req.auth.student_id, req.body.string_id);
+    res.json({ message });
+  } catch (err) {
+    console.error('Database insert error: ', err);
+    throw err;
+  };
+});
+
+app.delete("/courses", async (req, res) => {
+  try {
+    const message = await db.removeStudentCourse(req.auth.student_id, req.body.string_id);
+    res.json({ message });
+  } catch (err) {
+    console.error('Database insert error: ', err);
+    throw err;
+  };
+});
+
 // Middleware to check if a user is an admin
 function checkAdmin(req, res, next) {
   if (!req.auth.admin) {

@@ -75,7 +75,8 @@ exports.getStudentCourses = async (student_id) => {
         const result = await pool.query(`SELECT * FROM student_courses WHERE student_id=$1`, [student_id]);
         let resArr = [];
         for (row in result.rows) {
-            resArr.push(result.rows[row].course_id);
+            const course = await pool.query(`SELECT * FROM courses WHERE string_id=$1`, [result.rows[row].course_id]);
+            resArr.push(course.rows[0]);
         };
         return resArr;
     } catch (err) {
@@ -85,14 +86,14 @@ exports.getStudentCourses = async (student_id) => {
 };
    
 // Query database to add student to course
-exports.addStudentCourse = async (req, res) => {
+exports.addStudentCourse = async (student_id, string_id) => {
     try {
         await pool.query(`
             INSERT INTO student_courses
                 (student_id, course_id)
             VALUES
-                ('${req.student_id}', '${req.course_id}')
-    	`);
+                ($1, $2)
+    	`, [student_id, string_id]);
         return `Successfully added student to course`;
     } catch (err) {
         console.error('Database insert error: ', err);
@@ -101,9 +102,11 @@ exports.addStudentCourse = async (req, res) => {
 };
 
 // Query database to remove student from course
-exports.removeStudentCourse = async (id) => {
+exports.removeStudentCourse = async (student_id, string_id) => {
     try {
-        await pool.query(`DELETE FROM student_courses WHERE id = ${id}`);
+        await pool.query(`
+            DELETE FROM student_courses WHERE student_id = $1 AND course_id = $2
+    	`, [student_id, string_id]);
         return `Successfully removed student from course`;
     } catch (err) {
         console.error('Database delete error: ', err);

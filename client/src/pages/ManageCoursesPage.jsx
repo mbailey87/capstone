@@ -26,7 +26,7 @@ const ManageCoursesPage = () => {
       };
 
       try {
-        const response = await fetch("http://localhost:3001/courses", {
+        const response = await fetch("/courses", {
           headers: {
             "Authorization": `Bearer ${token}`
           },
@@ -65,7 +65,7 @@ const ManageCoursesPage = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:3001/courses", {
+      const response = await fetch("/courses", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -104,7 +104,7 @@ const ManageCoursesPage = () => {
     };
 
     try {
-      const response = await fetch(`http://localhost:3001/courses/${string_id}`, {
+      const response = await fetch(`/courses/${string_id}`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${token}`
@@ -130,7 +130,7 @@ const ManageCoursesPage = () => {
       setExpandedCourse(courseId);
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`http://localhost:3001/courses/${courseId}/students`, {
+        const response = await fetch(`/courses/${courseId}/students`, {
           headers: {
             "Authorization": `Bearer ${token}`
           },

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import graduationImg from '../assets/photos/graduation.webp';
 import studentDeskImg from '../assets/photos/student_at_desk.webp';
 import studentsTableImg from '../assets/photos/students_at_table.webp';
@@ -8,6 +8,15 @@ import studentsHallImg from '../assets/photos/students_in_hall.webp';
 const StudentDashboardPage = () => {
   const [courses, setCourses] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    const courseIds = [];
+    courses.forEach((course) => {
+      courseIds.push(course.string_id);
+    });
+    navigate("/courses", { state: { enrolledCourseIds: courseIds } });
+  };
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -20,9 +29,9 @@ const StudentDashboardPage = () => {
 
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
-        const student_id = payload.id;
+        const student_id = payload.student_id;
 
-        const response = await fetch('student/${student_id}/courses', {
+        const response = await fetch(`/student/${student_id}/courses`, {
           method: 'GET',
           headers: {
             "Authorization": `Bearer ${token}`
@@ -31,7 +40,7 @@ const StudentDashboardPage = () => {
 
         if (response.ok) {
           const result = await response.json();
-          setCourses(result.message);
+          setCourses(result.courses);
         } else {
           throw new Error("Failed to fetch courses");
         }
@@ -46,7 +55,11 @@ const StudentDashboardPage = () => {
   return (
     <div className="container mx-auto">
       <h1 className="text-2xl font-bold mb-4">Student Dashboard</h1>
-      <Link to="/courses" className="hover:text-purple mb-4 inline-block">Lookup Courses</Link>
+      {courses.length > 0 &&
+        <button onClick={handleNavigate} className="hover:text-purple mb-4 inline-block">
+          See All Courses
+        </button>
+      }
       <h2 className="text-xl font-bold mb-4">Enrolled Courses</h2>
       {errorMessage && <p className="text-red-500">{errorMessage}</p>}
       <table className="min-w-full bg-white">
