@@ -115,7 +115,7 @@ exports.removeStudentCourse = async (student_id, string_id) => {
 };
 
 // Query database to update user profile info
-exports.updateProfile = async (student_id, role, updatedInfo) => {
+exports.updateProfile = async (id, role, updatedInfo) => {
     try {
         let setClauses = [];
         let values = [];
@@ -127,13 +127,13 @@ exports.updateProfile = async (student_id, role, updatedInfo) => {
         });
 
         // Add student_id as last parameter
-        values.push(student_id);
+        values.push(id);
 
         // Build parameterized query
         const query = `
             UPDATE ${role}s
             SET ${setClauses.join(", ")}
-            WHERE student_id = $${values.length}
+            WHERE ${role}_id = $${values.length}
         `;
 
         await pool.query(query, values);
