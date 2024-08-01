@@ -156,7 +156,7 @@ const ManageCoursesPage = () => {
   return (
     <div className="container mx-auto">
       <h1 className="text-2xl font-bold mb-4">Manage Courses</h1>
-      <form onSubmit={handleSubmit} className="mb-6">
+      <form onSubmit={(e) => handleSubmit(e)} className="mb-6">
         <div className="grid grid-cols-2 gap-4 mb-4">
           {Object.keys(courseData).map((field) => (
             field !== 'description' ? (
@@ -166,7 +166,7 @@ const ManageCoursesPage = () => {
                 name={field}
                 placeholder={field.replace('_', ' ').toUpperCase()}
                 value={courseData[field]}
-                onChange={handleChange}
+                onChange={(e) => handleChange(e)}
                 className="p-2 border border-gray-300 rounded"
               />
             ) : (
@@ -175,7 +175,7 @@ const ManageCoursesPage = () => {
                 name={field}
                 placeholder={field.replace('_', ' ').toUpperCase()}
                 value={courseData[field]}
-                onChange={handleChange}
+                onChange={(e) => handleChange(e)}
                 className="p-2 border border-gray-300 rounded"
               />
             )
