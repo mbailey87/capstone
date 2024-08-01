@@ -66,8 +66,6 @@ const AdminDashboardPage = () => {
     <div className="container mx-auto">
       <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
       <div className="mb-4">
-        <a href="/admin/registration" className="hover:text-purple mr-4">Register New User</a>
-        <a href="/admin/manage-courses" className="hover:text-purple">Manage Courses</a>
       </div>
       <h2 className="text-xl font-bold mb-4">All Students</h2>
       {errorMessage && <p className="text-red-500">{errorMessage}</p>}
@@ -86,13 +84,13 @@ const AdminDashboardPage = () => {
         <tbody>
           {students.map((student, index) => (
             <tr key={index}>
-              <td className="py-2 px-4 border-b border-gray-200">{student.student_id}</td>
-              <td className="py-2 px-4 border-b border-gray-200">{student.first_name}</td>
-              <td className="py-2 px-4 border-b border-gray-200">{student.last_name}</td>
-              <td className="py-2 px-4 border-b border-gray-200">{student.email}</td>
-              <td className="py-2 px-4 border-b border-gray-200">{student.telephone}</td>
-              <td className="py-2 px-4 border-b border-gray-200">{student.address}</td>
-              <td className="py-2 px-4 border-b border-gray-200">
+              <td className="py-2 px-4 border-b border-gray-200 text-center">{student.student_id}</td>
+              <td className="py-2 px-4 border-b border-gray-200 text-center">{student.first_name}</td>
+              <td className="py-2 px-4 border-b border-gray-200 text-center">{student.last_name}</td>
+              <td className="py-2 px-4 border-b border-gray-200 text-center">{student.email}</td>
+              <td className="py-2 px-4 border-b border-gray-200 text-center">{student.telephone}</td>
+              <td className="py-2 px-4 border-b border-gray-200 text-center">{student.address}</td>
+              <td className="py-2 px-4 border-b border-gray-200 text-center">
                 <button
                   onClick={() => handleRemoveStudent(student.student_id)}
                   className="bg-red-500 text-white p-2 rounded"
