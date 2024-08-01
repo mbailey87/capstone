@@ -81,10 +81,21 @@ exports.addStudentCourse = async (req, res) => {
             VALUES
                 ('${req.student_id}', '${req.course_id}')
     	`);
-        res.json({ message: `Successfully added student to course` });
+        return `Successfully added student to course`;
     } catch (err) {
         console.error('Database insert error: ', err);
-        return res.status(500).json({ errorMessage: 'Database insert error' });
+        throw err;
+    };
+};
+
+// Query database to remove student from course
+exports.removeStudentCourse = async (id) => {
+    try {
+        await pool.query(`DELETE FROM student_courses WHERE id = ${id}`);
+        return `Successfully removed student from course`;
+    } catch (err) {
+        console.error('Database delete error: ', err);
+        throw err;
     };
 };
 
