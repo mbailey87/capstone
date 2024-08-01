@@ -23,7 +23,7 @@ const ManageCoursesPage = () => {
       if (!token) {
         console.error("No token found, please log in");
         return;
-      }
+      };
 
       try {
         const response = await fetch("http://localhost:3001/courses", {
@@ -37,10 +37,10 @@ const ManageCoursesPage = () => {
           setCourses(result.message);
         } else {
           console.error("Failed to fetch courses");
-        }
+        };
       } catch (err) {
         console.error("Error fetching courses:", err);
-      }
+      };
     };
 
     fetchCourses();
@@ -54,24 +54,72 @@ const ManageCoursesPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setCourses([...courses, courseData]);
-    setCourseData({
-      string_id: '',
-      title: '',
-      description: '',
-      schedule: '',
-      classroom_number: '',
-      maximum_capacity: '',
-      credit_hours: '',
-      tuition_cost: ''
-    });
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.error("No token found, please log in");
+      return;
+    };
+
+    try {
+      const response = await fetch("http://localhost:3001/courses", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(courseData)
+      });
+
+      if (response.ok) {
+        const newCourse = await response.json();
+        setCourses([...courses, newCourse]);
+        setCourseData({
+          string_id: '',
+          title: '',
+          description: '',
+          schedule: '',
+          classroom_number: '',
+          maximum_capacity: '',
+          credit_hours: '',
+          tuition_cost: ''
+        });
+      } else {
+        console.error("Failed to add course");
+      }
+    } catch (err) {
+      console.error("Error adding course:", err);
+    }
   };
 
-  const handleRemoveCourse = (string_id) => {
-    const newCourses = courses.filter(course => course.string_id !== string_id);
-    setCourses(newCourses);
+  const handleRemoveCourse = async (string_id) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.error("No token found, please log in");
+      return;
+    };
+
+    try {
+      const response = await fetch(`http://localhost:3001/courses/${string_id}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+      });
+
+      if (response.ok) {
+        const newCourses = courses.filter(course => course.string_id !== string_id);
+        setCourses(newCourses);
+      } else {
+        console.error("Failed to remove course");
+      }
+    } catch (err) {
+      console.error("Error removing course:", err);
+    }
   };
 
   const handleToggle = async (courseId) => {
@@ -89,7 +137,6 @@ const ManageCoursesPage = () => {
         });
         if (response.ok) {
           const students = await response.json();
-          console.log(`Students for course ${courseId}:`, students);
           setStudents(students);
         } else {
           console.error("Failed to fetch students for course");
@@ -164,7 +211,7 @@ const ManageCoursesPage = () => {
                   <td key={field} className="py-2 px-4 border-b border-gray-200">{course[field]}</td>
                 ))}
                 <td className="py-2 px-4 border-b border-gray-200">
-                  <button onClick={() => handleRemoveCourse(course.string_id)} className="bg-red-500 text-white p-2 rounded">
+                  <button onClick={(e) => {e.stopPropagation(); handleRemoveCourse(course.string_id)}} className="bg-red-500 text-white p-2 rounded">
                     Remove
                   </button>
                 </td>

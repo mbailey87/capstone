@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import graduationImg from '../assets/photos/graduation.webp';
+import studentDeskImg from '../assets/photos/student_at_desk.webp';
+import studentsTableImg from '../assets/photos/students_at_table.webp';
+import studentsHallImg from '../assets/photos/students_in_hall.webp';
 
 const StudentDashboardPage = () => {
   const [courses, setCourses] = useState([]);
@@ -38,22 +42,13 @@ const StudentDashboardPage = () => {
     fetchCourses();
   }, []);
 
-  const handleRemoveCourse = (courseId) => {
-    setCourses(courses.filter(course => course.string_id !== courseId));
-    // Add backend call to remove course for the student
-  };
-
   return (
     <div className="container mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-center">Student Dashboard</h1>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Enrolled Courses</h2>
-        <Link to="/courses" className="bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700">
-          Lookup Courses
-        </Link>
-      </div>
-      {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
-      <table className="min-w-full bg-white shadow-md rounded mb-4">
+      <h1 className="text-2xl font-bold mb-4">Student Dashboard</h1>
+      <Link to="/courses" className="hover:text-purple mb-4 inline-block">Lookup Courses</Link>
+      <h2 className="text-xl font-bold mb-4">Enrolled Courses</h2>
+      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+      <table className="min-w-full bg-white">
         <thead>
           <tr>
             <th className="py-2 px-4 border-b border-gray-200">String ID</th>
@@ -64,35 +59,29 @@ const StudentDashboardPage = () => {
             <th className="py-2 px-4 border-b border-gray-200">Maximum Capacity</th>
             <th className="py-2 px-4 border-b border-gray-200">Credit Hours</th>
             <th className="py-2 px-4 border-b border-gray-200">Tuition Cost</th>
-            <th className="py-2 px-4 border-b border-gray-200">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {courses.length > 0 ? (
-            courses.map((course, index) => (
-              <tr key={index} className="hover:bg-gray-100">
-                <td className="py-2 px-4 border-b border-gray-200">{course.string_id}</td>
-                <td className="py-2 px-4 border-b border-gray-200">{course.title}</td>
-                <td className="py-2 px-4 border-b border-gray-200">{course.description}</td>
-                <td className="py-2 px-4 border-b border-gray-200">{course.schedule}</td>
-                <td className="py-2 px-4 border-b border-gray-200">{course.classroom_number}</td>
-                <td className="py-2 px-4 border-b border-gray-200">{course.maximum_capacity}</td>
-                <td className="py-2 px-4 border-b border-gray-200">{course.credit_hours}</td>
-                <td className="py-2 px-4 border-b border-gray-200">{course.tuition_cost}</td>
-                <td className="py-2 px-4 border-b border-gray-200">
-                  <button onClick={() => handleRemoveCourse(course.string_id)} className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-700">
-                    Remove
-                  </button>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="9" className="py-4 text-center text-gray-500">No courses enrolled.</td>
+          {courses.map((course, index) => (
+            <tr key={index}>
+              <td className="py-2 px-4 border-b border-gray-200">{course.string_id}</td>
+              <td className="py-2 px-4 border-b border-gray-200">{course.title}</td>
+              <td className="py-2 px-4 border-b border-gray-200">{course.description}</td>
+              <td className="py-2 px-4 border-b border-gray-200">{course.schedule}</td>
+              <td className="py-2 px-4 border-b border-gray-200">{course.classroom_number}</td>
+              <td className="py-2 px-4 border-b border-gray-200">{course.maximum_capacity}</td>
+              <td className="py-2 px-4 border-b border-gray-200">{course.credit_hours}</td>
+              <td className="py-2 px-4 border-b border-gray-200">{course.tuition_cost}</td>
             </tr>
-          )}
+          ))}
         </tbody>
       </table>
+      <div className="flex justify-center mt-8">
+        <img src={graduationImg} alt="Graduation" className="w-1/4 mx-2" />
+        <img src={studentDeskImg} alt="Student at Desk" className="w-1/4 mx-2" />
+        <img src={studentsTableImg} alt="Students at Table" className="w-1/4 mx-2" />
+        <img src={studentsHallImg} alt="Students in Hall" className="w-1/4 mx-2" />
+      </div>
     </div>
   );
 };
