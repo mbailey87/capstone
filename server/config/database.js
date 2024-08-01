@@ -50,11 +50,11 @@ exports.deleteStudent = (req, res) => {
 // Query database to find and display all courses
 exports.getCourses = async (req, res) => {
     try {
-        await pool.query('SELECT * FROM courses');
+        const result = await pool.query('SELECT * FROM courses');
         return result.rows;
     } catch (err) {
         console.error('Database query error: ', err);
-        return res.status(500).json({ errorMessage: 'Database query error' });
+        throw err;
     };
 };
 
@@ -72,7 +72,7 @@ exports.getStudents = async () => {
 // Query database to find and display all courses a student is registered in
 exports.getStudentCourses = async (student_id) => {
     try {
-        const result = await pool.query(`SELECT * FROM student_courses WHERE student_id=${student_id}`);
+        const result = await pool.query(`SELECT * FROM student_courses WHERE student_id=$1`, [student_id]);
         let resArr = [];
         for (row in result.rows) {
             resArr.push(result.rows[row].course_id);
