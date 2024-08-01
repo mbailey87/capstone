@@ -35,6 +35,18 @@ exports.createUser = async (req, res, userInfo) => {
     };
 };
 
+// Query database to delete a student
+exports.deleteStudent = (req, res) => {
+    const { student_id } = req.params;
+    pool.query('DELETE FROM students WHERE student_id = $1', [student_id], (err, result) => {
+        if (err) {
+            console.error('Database delete error: ', err);
+            return res.status(500).json({ errorMessage: 'Database delete error' });
+        }
+        res.json({ message: `Successfully deleted student with ID ${student_id}` });
+    });
+};
+
 // Query database to find and display all courses
 exports.getCourses = async (req, res) => {
     try {
@@ -127,4 +139,22 @@ exports.updateProfile = async (student_id, role, updatedInfo) => {
         console.error('Database query error: ', err);
         throw err;
     };
+};
+
+// Query database to find students for a specific course
+exports.getStudentsForCourse = async (courseId) => {
+    try {
+        const result = await pool.query(
+            `SELECT s.student_id, s.first_name, s.last_name, s.email
+             FROM student_courses sc
+             JOIN students s ON sc.student_id = s.student_id
+             WHERE sc.course_id = $1`,
+            [courseId]
+        );
+        console.log(`Students for course ${courseId}:`, result.rows);
+        return result.rows;
+    } catch (err) {
+        console.error('Database query error: ', err);
+        throw err;
+    }
 };

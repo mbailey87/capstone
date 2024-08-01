@@ -20,13 +20,12 @@ const AdminLoginPage = ({ onLogin }) => {
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
       localStorage.setItem('token', data.token);
-      onLogin(true); // Notify App component about successful login
+      onLogin();
       navigate('/admin-dashboard');
     } catch (err) {
       setError(err.message);

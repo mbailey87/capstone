@@ -13,6 +13,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.use(cors({ origin: 'http://localhost:5173' }));
 
 // Serve the React app files
 app.use(express.static(path.resolve(__dirname, "../client/dist")));
@@ -28,14 +29,13 @@ app.post("/createUser", async (req, res) => {
     return res.status(400).json({ errorMessage: "No user info to process" });
   }
 
-  const { username, first_name, last_name, email, telephone, address, password } = req.body;
-  const role = "student"; // Default role is student
+  const { username, first_name, last_name, email, telephone, address, password, role } = req.body;
 
   try {
     const user = await db.getUser(username, role);
     if (user.length > 0) {
       return res.status(400).json({ errorMessage: "Username already in use, try again" });
-    } else if (username && first_name && last_name && email && telephone && address && password) {
+    } else if (username && first_name && last_name && email && telephone && address && password && role) {
       bcrypt.hash(password, saltRounds, async (err, hash) => {
         if (err) throw err;
         await db.createUser(req, res, { role, username, first_name, last_name, email, telephone, address, password_hash: hash });
@@ -136,6 +136,22 @@ app.get("/adminDashboard", async (req, res) => {
     res.status(500).json({ errorMessage: "Internal Server Error" });
   };
 });
+// Handle DELETE requests to delete a student in adminDashboard
+app.delete("/students/:student_id", checkAdmin, db.deleteStudent);
+
+
+// Handle GET requests to fetch students for a specific course
+app.get("/courses/:courseId/students", async (req, res) => {
+  try {
+      const courseId = req.params.courseId;
+      const students = await db.getStudentsForCourse(courseId);
+      res.json(students);
+  } catch (err) {
+      console.error("Error fetching students for course: ", err);
+      res.status(500).json({ errorMessage: "Internal Server Error" });
+  }
+});
+
 
 // Handle GET requests to /studentDashboard route
 app.get("/studentDashboard", async (req, res) => {

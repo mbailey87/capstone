@@ -8,9 +8,12 @@ module.exports = {
     extend: {
       colors: {
         purple: "#6B46C1",
-        gold: "#d1a855"
-      },
-    },
+        gold: "#d1a855",
+        black: "#000000",
+        white: "#FFFFFF"
+      }
+    }
   },
-  plugins: [],
-}
+  variants: {},
+  plugins: []
+};
