@@ -23,35 +23,9 @@ app.get("/api", (req, res) => {
   res.json({ message: "Hello from server!" });
 });
 
-// Create new user in the database
-app.post("/createUser", async (req, res) => {
-  if (!req.body || Object.keys(req.body).length === 0) {
-    return res.status(400).json({ errorMessage: "No user info to process" });
-  }
-
-  const { username, first_name, last_name, email, telephone, address, password, role } = req.body;
-
-  try {
-    const user = await db.getUser(username, role);
-    if (user.length > 0) {
-      return res.status(400).json({ errorMessage: "Username already in use, try again" });
-    } else if (username && first_name && last_name && email && telephone && address && password && role) {
-      bcrypt.hash(password, saltRounds, async (err, hash) => {
-        if (err) throw err;
-        await db.createUser(req, res, { role, username, first_name, last_name, email, telephone, address, password_hash: hash });
-      });
-    } else {
-      return res.status(400).json({ errorMessage: "All fields are required" });
-    }
-  } catch (err) {
-    console.error("Database query error: ", err);
-    return res.status(500).json({ errorMessage: "Internal Server Error" });
-  }
-});
-
 // Validate login credentials and create token
 const loginHandler = async (req, res, role) => {
-  console.log(`Login attempt: ${req.body.username} (${role})`); // Log the login attempt
+  console.log(`Login attempt: ${req.body.username} (${role})`);
 
   if (!req.body || Object.keys(req.body).length === 0) {
     console.log('No user info to process');
@@ -60,7 +34,7 @@ const loginHandler = async (req, res, role) => {
 
   try {
     const user = await db.getUser(req.body.username, role);
-    console.log('User found:', JSON.stringify(user, null, 2)); // Log the detailed user information
+    console.log('User found:', JSON.stringify(user, null, 2));
 
     if (!user || user.length === 0) {
       console.log('Invalid Credentials');
@@ -86,8 +60,8 @@ const loginHandler = async (req, res, role) => {
           expiresIn: "15m",
         });
 
-        console.log(`Login successful for user: ${user[0].username}`); // Log successful login
-        return res.json({ token: token, user: tokenPayload }); // Include user info in the response
+        console.log(`Login successful for user: ${user[0].username}`);
+        return res.json({ token: token, user: tokenPayload });
       } else {
         console.log('Invalid Credentials');
         return res.status(401).json({ errorMessage: "Invalid Credentials" });
@@ -114,13 +88,6 @@ app.use(
 // Handle GET requests to /courses route
 app.get("/courses", db.getCourses);
 
-// Handle POST requests to /courses route to add a new course
-app.post("/courses", db.addCourse);
-
-// Handle DELETE requests to remove a course
-app.delete("/courses/:string_id", checkAdmin, db.deleteCourse);
-
-
 // Middleware to check if a user is an admin
 function checkAdmin(req, res, next) {
   if (!req.auth.admin) {
@@ -137,44 +104,58 @@ app.get("/adminDashboard", async (req, res) => {
   try {
     const students = await db.getStudents();
     const payload = { ...req.auth, students: students };
-    res.json(payload); // Send user info from JWT payload
+    res.json(payload);
   } catch (err) {
     console.error("Error fetching students: ", err);
     res.status(500).json({ errorMessage: "Internal Server Error" });
-  };
+  }
 });
+
+// Handle PUT requests to update student information
+app.put("/students/:student_id", checkAdmin, async (req, res) => {
+  const { student_id } = req.params;
+  const updatedStudent = req.body;
+
+  try {
+    await db.updateStudent(student_id, updatedStudent);
+    res.json({ message: `Successfully updated student with ID ${student_id}` });
+  } catch (err) {
+    console.error('Database update error: ', err);
+    res.status(500).json({ errorMessage: 'Database update error' });
+  }
+});
+
+
 // Handle DELETE requests to delete a student in adminDashboard
 app.delete("/students/:student_id", checkAdmin, db.deleteStudent);
-
 
 // Handle GET requests to fetch students for a specific course
 app.get("/courses/:courseId/students", async (req, res) => {
   try {
-      const courseId = req.params.courseId;
-      const students = await db.getStudentsForCourse(courseId);
-      res.json(students);
+    const courseId = req.params.courseId;
+    const students = await db.getStudentsForCourse(courseId);
+    res.json(students);
   } catch (err) {
-      console.error("Error fetching students for course: ", err);
-      res.status(500).json({ errorMessage: "Internal Server Error" });
+    console.error("Error fetching students for course: ", err);
+    res.status(500).json({ errorMessage: "Internal Server Error" });
   }
 });
-
 
 // Handle GET requests to /studentDashboard route
 app.get("/studentDashboard", async (req, res) => {
   try {
     const courses = await db.getStudentCourses(req.auth.student_id);
     const payload = { ...req.auth, courses: courses };
-    res.json(payload); // Send user info from JWT payload
+    res.json(payload);
   } catch (err) {
     console.error("Error fetching courses: ", err);
     res.status(500).json({ errorMessage: "Internal Server Error" });
-  };
+  }
 });
 
 // Handle GET requests to /profile route
 app.get("/profile", (req, res) => {
-  res.json(req.auth); // Send user info from JWT payload
+  res.json(req.auth);
 });
 
 // Handle POST requests to /profile route

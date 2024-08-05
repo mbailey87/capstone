@@ -171,6 +171,21 @@ exports.updateProfile = async (student_id, role, updatedInfo) => {
     };
 };
 
+// Query database to update student information
+exports.updateStudent = async (student_id, updatedStudent) => {
+    try {
+      const { first_name, last_name, email, telephone, address } = updatedStudent;
+      await pool.query(`
+        UPDATE students 
+        SET first_name = $1, last_name = $2, email = $3, telephone = $4, address = $5
+        WHERE student_id = $6
+      `, [first_name, last_name, email, telephone, address, student_id]);
+    } catch (err) {
+      console.error('Database update error: ', err);
+      throw err;
+    }
+  }; 
+
 // Query database to find students for a specific course
 exports.getStudentsForCourse = async (courseId) => {
     try {

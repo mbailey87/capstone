@@ -1,4 +1,3 @@
-// ManageCoursesPage.jsx
 import React, { useState } from 'react';
 import useCourses from '../hooks/useCourses';
 import CourseForm from '../components/CourseForm';
